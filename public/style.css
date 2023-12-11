@@ -1,0 +1,121 @@
+
+.login {
+  background-color: #6495ed;
+}
+
+.centrado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boty{
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100svh;
+  font-size: larger;
+}
+
+.form-container{
+  width: 500px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 50px;
+  text-align: center;
+}
+
+.form-container2 {
+  width: 500px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 50px;
+  text-align: center;
+
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+}
+
+
+form{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+form+p, form p {
+  text-align: center;
+}
+
+ button{
+  border-radius: 4px;
+  border: unset;
+  box-shadow: inset;
+  padding: 15px 30px;
+  font-size: larger;
+}
+
+input { 
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  padding: 15px 30px;
+  font-size: larger;
+}
+
+button{
+  background-color: #6495ed;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.error{
+  color: rgb(255, 81, 81);
+}
+
+.escondido{
+  display: none;
+}
+
+.sr-only{
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}
+
+.card {
+  width: 500px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 50px;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  body {
+    justify-content: start;
+    align-items: start;
+  }
+
+  .form-container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  form {
+    padding: 0;
+  }
+
+  button {
+    padding: 10px;
+  }
+
+  .card {
+    width: 90%;
+    padding: 20px;
+  }
+}

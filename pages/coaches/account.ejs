@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100svh;
+      font-size: larger;
+    }
+    </style>
+</head>
+<body class="">
+  <main>
+    <div id="errorContainer"></div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <img src="logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+          Coach  Area
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/Account">Account</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/ver-alumnos">My Students</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/register">Register Student</a>
+            </li>
+            <li class="nav-item">
+              <form id="logoutForm" action="/logout" method="post" style="display: none;">
+                
+              </form>
+              <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="account mt-4">
+            <div class="container">
+                <div class="row gutters">
+                <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="account-settings">
+                            <div class="user-profile">
+                                <div class="user-avatar">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin">
+                                </div>
+                                <h5 class="user-name mt-2"><%= coach.name %> <%= coach.surname %></h5>
+                                <h6 class="text-decoration-underline"><%= coach.mail %></h6>
+                            </div>
+                            <div class="about">
+                                <h5>About:</h5>
+                                <p><%= coach.description %></p>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+                </div>
+                <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <form id="updateForm">
+                        <div class="row gutters">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <h6 class="mb-2 text-primary">Personal Details</h6>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="fullName">Age</label>
+                                    <input type="number" class="form-control" id="fullName"  min="1" max="99" placeholder=<%= coach.age %>>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="eMail">Email</label>
+                                    <input type="email" class="form-control" id="eMail" placeholder=<%= coach.mail %>>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" class="form-control" id="phone" placeholder=<%= coach.phone %>>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="website">Description</label>
+                                    <input type="url" class="form-control" id="description" placeholder=<%= coach.description %>>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row gutters">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="mt-2 text-right">
+                                    <button type="button" id="submit" name="submit" class="btn btn-primary" onclick="updateData()">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  
+                </form>
+              
+                </div>
+                </div>
+                </div>
+                </div>
+               
+        </div>
+        
+
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script>
+    
+    function logout() {
+      // Simula el envío del formulario de logout
+      document.getElementById('logoutForm').submit();
+    }
+
+    function updateData() {
+    const inputFullName = document.getElementById('fullName');
+    const inputEmail = document.getElementById('eMail');
+    const inputPhone = document.getElementById('phone');
+    const inputDescription = document.getElementById('description');
+
+    const currentCoach = {
+        age: '<%= coach.age %>',
+        email: '<%= coach.mail %>',
+        phone: '<%= coach.phone %>',
+        description: '<%= coach.description %>'
+    };
+
+    const valoresUpdate = {
+        age: inputFullName.value || currentCoach.age,
+        email: inputEmail.value || currentCoach.email,
+        phone: inputPhone.value || currentCoach.phone,
+        description: inputDescription.value || currentCoach.description
+    };
+    //console.log(valoresUpdate);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmailValid = emailRegex.test(valoresUpdate.email);
+    const isAgeValid = valoresUpdate.age >= 1 && valoresUpdate.age <= 99;
+    const errorContainer = document.getElementById('errorContainer');
+    //console.log(isAgeValid, isEmailValid)
+    if (!isEmailValid || !isAgeValid) {
+        console.log("error")
+        const errorCard = `
+                <div class="alert alert-danger alert-dismissible fade show fixed-top mx-auto mt-5" role="alert">
+                <strong>Validation Error:</strong> Invalid Input. Please check your input values.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            `;
+        errorContainer.innerHTML = errorCard;
+    } else {
+        // Realizar la solicitud POST solo si la validación es exitosa
+        fetch('/api/updatecoach', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(valoresUpdate)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error updating coach:', error);
+        });
+    }
+}
+
+</script>
+
+</body>
+</html>

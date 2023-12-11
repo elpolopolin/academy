@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+         crossorigin="anonymous">
+        
+        <style>
+          body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100svh;
+            font-size: larger;
+          }
+          </style>
+</head>
+
+<body>
+    <main>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+                    Admin Area
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ver-coaches">Coaches</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ver-alumnos">Students</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Bills">Bills</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register coach</a>
+                        </li>
+                        <li class="nav-item">
+                            <form id="logoutForm" action="/logout" method="post" style="display: none;">
+
+                            </form>
+                            <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+       
+       
+        <div class="container mt-4">
+            <div class="p-2 shadow-lg ">
+            <div class="table-responsive ">
+                <table id="example" class="table table-striped  table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Username</th>
+                            <th>FullName</th>
+                            <th>Mail</th>
+                            <th>Phone</th>
+                            <th>Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% coaches.forEach(coach => { %>
+                        <tr class="">
+                            <td>
+                                <button onclick="editCoach('<%= coach.id %>')" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i> 
+                                </button>
+                                <button onclick="deleteCoach('<%= coach.id %>')" class="btn btn-danger">
+                                    <i class="fas fa-trash-alt"></i> 
+                                </button>
+                               
+                            </td>
+                            
+                            <td id="username<%= coach.id %>"><%= coach.username %></td>
+                            <td id='name<%= coach.id %>'><%= coach.name || '' %> <%= coach.surname || 'null' %></td>
+                            <td id="mail<%= coach.id %>"><%= coach.mail %></td>
+                            <td id="phone<%= coach.id %>"><%= coach.phone || 'N/A' %></td>     
+                            <td id="age<%= coach.id %>"><%= coach.age || 'N/A' %></td>
+                        
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
+
+        function logout() {
+            // Simula el envío del formulario de logout
+            document.getElementById('logoutForm').submit();
+        }
+
+        function editCoach(coachId) {
+            let usernameElement = document.getElementById(`username${coachId}`);
+            
+            let mailElement = document.getElementById(`mail${coachId}`);
+            let phoneElement = document.getElementById(`phone${coachId}`);
+            let ageElement = document.getElementById(`age${coachId}`);
+
+            // Crear campos de entrada y establecer el valor actual
+            let usernameInput = createInput('text', usernameElement.innerText);
+            let mailInput = createInput('text', mailElement.innerText);
+            let phoneInput = createInput('text', phoneElement.innerText);
+            let ageInput = createInput('text', ageElement.innerText);
+
+           // Crear el contenido del modal
+        const modalContent = document.createElement('div');
+        modalContent.innerHTML = `
+       
+        <div class="modal fade" id="editModal${coachId}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div id="errorContainer"></div> 
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Coach</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateForm">
+                            <div class="mb-3">
+                                <label for="usernameInput" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="usernameInput${coachId}" value="${usernameInput.value}">
+                            </div> 
+                            <div class="mb-3">
+                                <label for="mailInput" class="form-label">Mail</label>
+                                <input type="text" class="form-control" id="mailInput${coachId}" value="${mailInput.value}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phoneInput" class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="phoneInput${coachId}" value="${phoneInput.value}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="ageInput" class="form-label">Age</label>
+                                <input type="text" class="form-control" id="ageInput${coachId}" value="${ageInput.value}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="updateData('${coachId}')">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        `;
+
+        // Añadir el modal al cuerpo del documento
+        document.body.appendChild(modalContent);
+
+        // Mostrar el modal
+        const editModal = new bootstrap.Modal(document.getElementById(`editModal${coachId}`));
+        editModal.show();
+    }
+
+            function createInput(type, value) {
+                let input = document.createElement('input');
+                input.type = type;
+                input.value = value;
+                return input;
+            }
+
+        function replaceElement(oldElement, newElement) {
+            oldElement.parentNode.replaceChild(newElement, oldElement);
+        }
+
+    
+
+            function updateData(coachId) {
+                let username = document.getElementById(`usernameInput${coachId}`).value;
+                let inputEmail = document.getElementById(`mailInput${coachId}`).value;
+                let inputPhone = document.getElementById(`phoneInput${coachId}`).value;
+                let age = document.getElementById(`ageInput${coachId}`).value;
+
+                //console.log(coachId)
+
+                let valoresUpdate = {
+                    id: coachId,
+                    username: username ,
+                    email: inputEmail ,
+                    phone: inputPhone,
+                    age: age,
+                    description: "update de admin",
+                };
+                console.log(valoresUpdate);
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                const errorContainer = document.getElementById('errorContainer');
+                //console.log(isAgeValid, isEmailValid)
+                /* if (!isEmailValid ) {
+                    console.log("error aa")
+                    const errorCard = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Validation Error:</strong> Invalid Input. Please check your input values.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+                        `;
+                    errorContainer.innerHTML = errorCard;
+                } else { */
+                    // Realizar la solicitud POST solo si la validación es exitosa
+                    fetch('/api/updatecoachadmin', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(valoresUpdate)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        location.reload()
+                    })
+                    .catch(error => {
+                        console.error('Error updating coach:', error);
+                    });
+                }
+               
+        
+
+      
+
+    function deleteCoach(coachId) {
+        console.log('Delete coach with ID:', coachId);
+        fetch('/api/deletecoach', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: coachId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        location.reload()
+                    })
+                    .catch(error => {
+                        console.error('Error updating coach:', error);
+                    });
+    }
+    </script>
+</body>
+
+</html>
