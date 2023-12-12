@@ -1,7 +1,7 @@
 import mysql from "mysql";
 import revisarCookie from "./revisarCookies.js";
 import dotenv from "dotenv";
-
+import path from 'path';
 
 dotenv.config();
 
@@ -12,6 +12,7 @@ const pool = mysql.createPool({
   password: process.env.SQL_PASSWORD || '',
   database: 'sql5669660'
 });
+
 
 async function getCoachbyId(id) {
   return new Promise((resolve, reject) => {
@@ -25,6 +26,7 @@ async function getCoachbyId(id) {
   });
 }
 
+const host = "localhost:4000";
 
 async function getCoachesElement(element) {
   return new Promise((resolve, reject) => {
@@ -148,10 +150,10 @@ async function UpdateCoach(req, res) {
   // Sacar id del coachlogged
   const coachId = revisarCookie(req, coaches, "id");
   console.log("este es el coach id update coach: ", coachId)
-  const valoresUpdate = req.body;
+  const data = req;
 
   try {
-    const result = await updateCoachInDatabase(coachId, valoresUpdate);
+    const result = await updateCoachInDatabase(coachId, data);
     res.json({ success: true, message: 'Coach updated successfully', result });
   } catch (error) {
     console.error('Error updating coach:', error);
@@ -159,7 +161,11 @@ async function UpdateCoach(req, res) {
   }
 }
 
-function updateCoachInDatabase(coachId, valoresUpdate) {
+function updateCoachInDatabase(coachId, data) {
+  const valoresUpdate = data.body;
+  const extname = data.file ? path.extname(data.file.filename) : '';
+  const imagenRuta = data.file ? `${host}/imagenesCoaches/${data.file.filename}` : '';
+          
   return new Promise((resolve, reject) => {
     pool.query(
       'UPDATE coaches SET age = ?, mail = ?, phone = ?, description = ? WHERE id = ?',
