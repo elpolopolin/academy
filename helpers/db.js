@@ -25,6 +25,22 @@ async function getCoachbyId(id) {
   });
 }
 
+
+async function getCoachesElement(element) {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT id, ${element} FROM coaches`;  // Corregir la consulta SQL
+
+    pool.query(query, function (err, rows, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+
 async function getBillsbyId(id) {
   return new Promise((resolve, reject) => {
     pool.query('SELECT * FROM bills WHERE coachId = ?', [id], function (err, rows, fields) {
@@ -240,4 +256,4 @@ function deleteCoachBd(coachId) {
 
 //
 
-export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById };
+export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement };
