@@ -47,19 +47,20 @@ coaches.forEach(user => {
 
 
 async function login(req, res) {
-  // console.log("req body:", req.body);
+  const coaches = await getCoaches();
   const user = req.body.username;
   const password = req.body.password;
 
   if (!user || !password) {
     return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
   }
-  const coaches = await getCoaches();
+  
   const usuarioAResvisar = coaches.find(coach => coach.username === user);
   if (!usuarioAResvisar) {
-    return res.status(400).send({ status: "Error", message: "Error durante login" });
+    return res.status(400).send({ status: "Error", message: "Error durante login name" });
+    
   }
-
+  
   // console.log("password user a revisar:", usuarioAResvisar.password)
   // console.log("pasword ingresada ", password);
 
