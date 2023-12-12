@@ -64,7 +64,7 @@
               <th scope="col">Bill Date</th>
               <th scope="col">Class Date</th>
               <th scope="col">Paid</th>
-              <th scope="col"><button type="button" class="btn btn-primary">New Bill</button></th>
+              <th scope="col"><button type="button" onclick="newbill()"  class="btn btn-primary">New Bill</button></th>
             </tr>
           </thead>
           <tbody>
@@ -115,7 +115,7 @@
       
         // Mostrar la fecha en el elemento HTML
         elemento.textContent = fechaFormateada;
-        console.log(fechaFormateada)
+        
       });
     });
   </script>
@@ -125,8 +125,133 @@
       document.getElementById('logoutForm').submit();
     }
 
-   
+    function newbill() {
+            
+           // Crear el contenido del modal
+        const modalContent = document.createElement('div');
+        modalContent.innerHTML = `
+       
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div id="errorContainer"></div> 
+    <div class="modal-dialog justify-content-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">New Bill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="updateForm">
+                    <div class="mb-3">
+                        <label for="client" class="form-label">Client</label>
+                        <select class="form-select" id="client" aria-label="Client Select" required>
+                            <option disabled selected>Select Client</option>
+                            <option value="1">Polo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="typeSelect" class="form-label">Class Type</label>
+                        <select class="form-select form-control" id="typeSelect" aria-label="Type Select" required>
+                            <option disabled selected>Select Class Type</option>
+                            <option value="Private Class">Private Class</option>
+                            <option value="Semi-Private Class">Semi-Private Class</option>
+                            <option value="Group Class">Groupal Class</option>
+                        </select>
+                    </div>
 
+                    <div class="mb-3">
+                        <label for="classLength" class="form-label">Class Length</label>
+                        <select class="form-select form-control" id="classLength" aria-label="Class Length Select" required>
+                            <option disabled selected>Select Class Length</option>
+                            <option value="0.5">00:30hs</option>
+                            <option value="1">01:00hs</option>
+                            <option value="1.5">01:30hs</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="message" class="form-label">Message for the client</label>
+                    <textarea class="form-control" id="message" rows="2" required></textarea>
+                  </div>
+
+                    <div class="mb-3">
+                        <div class="hide-inputbtns">
+                            <div class="input-group">
+                                <label class="form-label"></label>
+                                <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+                                <input class="form-control" type="datetime-local" id="classDate" name="classDate" required/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="hide-inputbtns">
+                            <div class="input-group">
+                                <label class="form-label"></label>
+                                <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
+                                <input class="form-control" type="number" placeholder="10.99" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" currency" id="c2" required />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+        `;
+        // Añadir el modal al cuerpo del documento
+        document.body.appendChild(modalContent);
+        // Mostrar el modal
+        const editModal = new bootstrap.Modal(document.getElementById(`editModal`));
+        editModal.show();
+
+        document.getElementById('updateForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    createBill();
+      });
+    } 
+
+  
+
+function createBill() {
+    // Obtener los valores de los campos del formulario
+    const client = document.getElementById('client').value;
+    const classType = document.getElementById('typeSelect').value;
+    const classLength = document.getElementById('classLength').value;
+    const classMessage = document.getElementById('message').value;
+    const classDate = document.getElementById('classDate').value;
+    const amount = document.getElementById('c2').value;
+
+   fetch("http://localhost:4000/api/newbill", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                client,
+                classType,
+                classLength,
+                classMessage,
+                classDate,
+                amount
+            })
+        })
+        .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        location.reload()
+                    })
+                    .catch(error => {
+                        console.error('Error updating coach:', error);
+        });
+   
+}
   </script>
+   <script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
 </body>
 </html>

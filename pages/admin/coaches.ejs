@@ -76,13 +76,15 @@
                         <% coaches.forEach(coach => { %>
                         <tr class="">
                             <td>
-                                <button onclick="editCoach('<%= coach.id %>')" class="btn btn-warning">
+                                <button onclick="editCoach('<%= coach.id %>')" class="btn ">
                                     <i class="fas fa-edit"></i> 
                                 </button>
-                                <button onclick="deleteCoach('<%= coach.id %>')" class="btn btn-danger">
+                                <button onclick="deleteCoach('<%= coach.id %>')" class="btn ">
                                     <i class="fas fa-trash-alt"></i> 
                                 </button>
-                               
+                                <button class="btn btn-">
+                                <i class="fa-solid fa-list-ul"></i>
+                            </button>
                             </td>
                             
                             <td id="username<%= coach.id %>"><%= coach.username %></td>
