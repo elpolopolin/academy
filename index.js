@@ -1,6 +1,6 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement} from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, } from "./helpers/db.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
 //Fix para __direname
@@ -83,12 +83,8 @@ app.get("/coaches",authorization.soloCoaches, async function(req,res) {
   res.render(__dirname + "/pages/coaches/index.ejs", { coachBills });
 });
 
-app.get("/coaches/new-bill",authorization.soloCoaches, async function (req,res) {
-  const coaches = await getCoachesElement("username");
-  console.log("usernames aaaaa: ", coaches)
-  res.render(__dirname + "/pages/coaches/newBill.ejs", { coaches });
-});
-app.post("/api/newbill",authorization.soloCoaches, (req, res) => createBill(req, res));
+
+app.post("/api/newbill",authorization.soloCoaches, (req, res) => CreateBilll(req, res));
 
 app.get("/Account", authorization.soloCoaches, async function (req, res) {
   const coaches = await getCoaches();

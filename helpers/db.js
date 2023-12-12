@@ -259,7 +259,60 @@ function deleteCoachBd(coachId) {
 }
 
 
+async function CreateBilll(req, res) {
+
+  const coaches = await getCoaches();
+
+  // Sacar id del coachlogged
+  const coachId = revisarCookie(req, coaches, "id");
+  console.log("este es el coach id: ", coachId)
+  const data = req.body;
+
+  try {
+    const result = await CreateBillDb(coachId, data);
+    res.json({ success: true, message: 'Coach updated successfully', result });
+  } catch (error) {
+    console.error('Error updating coach:', error);
+    res.status(500).json({ success: false, message: 'Error updating coach' });
+  }
+}
+
+function getRandomId() {
+  return Math.floor(10000000 + Math.random() * 90000000);
+}
+
+async function CreateBillDb(coachId, data) {
+  const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' '); // Fecha actual en formato ISO
+  let randomId;
+  const bills = await getAllbills();
+
+  // Intentar generar un randomId único
+  do {
+    randomId = getRandomId();
+  } while (bills.some((bill) => bill.id === randomId));
+
+  const insertQuery = `
+    INSERT INTO bills (id, coachId, clientId, type, length, price, billDate, classDate, message)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      insertQuery,
+      [randomId, coachId, data.client, data.classType, data.classLength, data.amount, currentDate, data.classDate, data.classMessage],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+
 
 //
 
-export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement };
+export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll };
