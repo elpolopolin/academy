@@ -1,6 +1,6 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach} from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById} from "./helpers/db.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
 //Fix para __direname
@@ -42,7 +42,14 @@ app.get("/error", function (req, res) {
   res.render(__dirname + "/pages/error.html");
 });
 app.get("/register",authorization.soloAdmin,(req,res)=> res.sendFile(__dirname + "/pages/admin/register.html"));
-
+app.get("/viewbill/:id", async (req, res) => {
+  try {
+    let bill = await getBillById(req.params.id)
+    res.render(__dirname + "/pages/viewbill.ejs", {bill});
+  } catch (error){
+    res.send(error)
+  }
+})
 //admin
 app.get("/admin",authorization.soloAdmin,(req,res)=> res.sendFile(__dirname + "/pages/admin/admin.html"));
 

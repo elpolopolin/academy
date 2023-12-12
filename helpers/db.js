@@ -19,7 +19,7 @@ async function getCoachbyId(id) {
       if (err) {
         reject(err);
       } else {
-        resolve(rows[0]); 
+        resolve(rows[0]);
       }
     });
   });
@@ -31,7 +31,7 @@ async function getBillsbyId(id) {
       if (err) {
         reject(err);
       } else {
-        resolve(rows); 
+        resolve(rows);
       }
     });
   });
@@ -42,19 +42,19 @@ async function getAllbills() {
   try {
     const bills = await new Promise((resolve, reject) => {
       pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
-      'FROM bills ' +
-      'INNER JOIN coaches ON bills.coachId = coaches.id ' +
-      'ORDER BY bills.billDate DESC', function (err, rows, fields) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      });
+        'FROM bills ' +
+        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
+        'ORDER BY bills.billDate DESC', function (err, rows, fields) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
     });
     // Iterar sobre cada factura y obtener el nombre del entrenador
     for (const bill of bills) {
-      
+
       bill.billDate = formatDate(bill.billDate);
       bill.classDate = formatDate(bill.classDate);
     }
@@ -64,6 +64,43 @@ async function getAllbills() {
     throw error;
   }
 }
+
+// traer solo bill a pagar segun id
+async function getBillById(id) {
+  try {
+    const rows = await new Promise((resolve, reject) => {
+      pool.query(
+        'SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
+        'FROM bills ' +
+        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
+        'WHERE bills.id = ? ' +  
+        'ORDER BY bills.billDate DESC',
+        [id], 
+        function (err, rows, fields) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        }
+      );
+    });
+
+    if (rows.length === 0) {
+      return null; 
+    }
+
+    const bill = rows[0];
+    bill.billDate = formatDate(bill.billDate);
+    bill.classDate = formatDate(bill.classDate);
+
+    return bill;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 function formatDate(dateString) {
   const date = new Date(dateString);
   const day = date.getDate();
@@ -89,9 +126,9 @@ async function getCoaches() {
 
 // UPDATE COACH
 async function UpdateCoach(req, res) {
-  
+
   const coaches = await getCoaches();
- 
+
   // Sacar id del coachlogged
   const coachId = revisarCookie(req, coaches, "id");
   console.log("este es el coach id update coach: ", coachId)
@@ -139,16 +176,16 @@ function updateCoachInDatabaseAdmin(coachId, valoresUpdate) {
 }
 
 async function UpdateCoachAdmin(req, res) {
- // console.log("update coaches desde admin")
- const coaches = await getCoaches();
- 
- // Sacar id del coachlogged a ver si es admin
- const admin = revisarCookie(req, coaches, "admin");
- //console.log("es admin ",admin)
+  // console.log("update coaches desde admin")
+  const coaches = await getCoaches();
+
+  // Sacar id del coachlogged a ver si es admin
+  const admin = revisarCookie(req, coaches, "admin");
+  //console.log("es admin ",admin)
 
   const valoresUpdate = req.body;
   const coachId = req.body.id;
-  if (admin == 1){
+  if (admin == 1) {
     try {
       const result = await updateCoachInDatabaseAdmin(coachId, valoresUpdate);
       res.json({ success: true, message: 'Coach updated successfully', result });
@@ -159,8 +196,8 @@ async function UpdateCoachAdmin(req, res) {
   } else {
     console.log("intenta updatear coaches pero no es admin")
   }
- 
- 
+
+
 }
 
 async function deleteCoach(req, res) {
@@ -169,21 +206,21 @@ async function deleteCoach(req, res) {
   // Sacar id del coachlogged a ver si es admin
   const admin = revisarCookie(req, coaches, "admin");
   //console.log("es admin ",admin)
-   const coachId = req.body.id;
-   if (admin == 1){
-     try {
-       const result = await deleteCoachBd(coachId);
-       res.json({ success: true, message: 'Coach updated successfully', result });
-     } catch (error) {
-       console.error('Error updating coach:', error);
-       res.status(500).json({ success: false, message: 'Error updating coach' });
-     }
-   } else {
-     console.log("intenta deletear coaches pero no es admin")
-   }
- }
+  const coachId = req.body.id;
+  if (admin == 1) {
+    try {
+      const result = await deleteCoachBd(coachId);
+      res.json({ success: true, message: 'Coach updated successfully', result });
+    } catch (error) {
+      console.error('Error updating coach:', error);
+      res.status(500).json({ success: false, message: 'Error updating coach' });
+    }
+  } else {
+    console.log("intenta deletear coaches pero no es admin")
+  }
+}
 
- function deleteCoachBd(coachId) {
+function deleteCoachBd(coachId) {
   return new Promise((resolve, reject) => {
     pool.query(
       'DELETE FROM coaches WHERE id = ?',
@@ -198,9 +235,9 @@ async function deleteCoach(req, res) {
     );
   });
 }
- 
+
 
 
 //
 
-export {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach};
+export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById };
