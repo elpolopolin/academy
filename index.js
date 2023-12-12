@@ -45,7 +45,12 @@ app.get("/register",authorization.soloAdmin,(req,res)=> res.sendFile(__dirname +
 app.get("/viewbill/:id", async (req, res) => {
   try {
     let bill = await getBillById(req.params.id)
-    res.render(__dirname + "/pages/viewbill.ejs", {bill});
+    if(bill){
+      res.render(__dirname + "/pages/viewbill.ejs", {bill});
+    }else{
+      res.send("bill was not found")
+    }
+    
   } catch (error){
     res.send(error)
   }
