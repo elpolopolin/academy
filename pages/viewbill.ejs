@@ -27,17 +27,19 @@
             <div class="card">
                 <div class="card-body mx-4">
                   <div class="container">
-                    <p class="my-5 " style="font-size: 30px;">Thank for your confidence</p>
+                    <div class="d-flex">
+                        <p class="my-5 display-1" style="flex: 70%; font-size: 4.5vw;">Thank you for your confidence</p>
+                        <img src="/logo.png" alt="logo" class="my-5" style="float: right; width: 20%; height: 80%; "/> 
+                    </div>
                     <div class="row">
                       <ul class="list-unstyled">
-                        <li class="text-black"> Client Name: <%= bill.clientId %> </li>
-                        <li class="text-muted mt-1"><span class="text-black">Class Length: </span> # <%= bill.length %>hr </li>
-                        <li class="text-black mt-1"> Bill Date: <%= bill.billDate %> </li>
-                        <li class="text-black mt-1"> Class Date: <%= bill.classDate %> </li>
+                        <li class="text-black" > Client Name: <%= bill.clientId %> </li>
+                        <li class="text-black mt-1" > Bill Date: <%= bill.billDate %> </li>
+                        <li class="text-black mt-1" > Class Date: <%= bill.classDate %> </li>
                       </ul>
                       <hr>
                       <div class="col-xl-10">
-                        <p>Pro Package</p>
+                        <p> <%= bill.length %>hr Class</p>
                       </div>
                       <div class="col-xl-2">
                         <p class="float-end">$<%= bill.price %>
@@ -55,10 +57,12 @@
                       <hr style="border: 2px solid black;">
                     </div>
                     <div class="text-center" style="margin-top: 90px;">
-                      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+                      <p> Polonsky Tennis Academy </p>
                     </div>
               
                   </div>
+
+
                 </div>
               </div>
     </main>
