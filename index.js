@@ -1,6 +1,6 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById} from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement} from "./helpers/db.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
 //Fix para __direname
@@ -9,6 +9,7 @@ import {fileURLToPath} from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import {methods as authentication} from "./controllers/authentication.controller.js"
 import {methods as authorization} from "./middlewares/authorization.js";
+import { upload } from "./helpers/uploadMulter.js";
 
 
 //Server
@@ -79,9 +80,15 @@ app.get("/coaches",authorization.soloCoaches, async function(req,res) {
   const coachId = revisarCookie(req, coaches, "id");
   const coachBills = await getBillsbyId(coachId);
   console.log(coachBills)
-
   res.render(__dirname + "/pages/coaches/index.ejs", { coachBills });
 });
+
+app.get("/coaches/new-bill",authorization.soloCoaches, async function (req,res) {
+  const coaches = await getCoachesElement("username");
+  console.log("usernames aaaaa: ", coaches)
+  res.render(__dirname + "/pages/coaches/newBill.ejs", { coaches });
+});
+app.post("/api/newbill",authorization.soloCoaches, (req, res) => createBill(req, res));
 
 app.get("/Account", authorization.soloCoaches, async function (req, res) {
   const coaches = await getCoaches();
@@ -96,7 +103,7 @@ app.get("/Account", authorization.soloCoaches, async function (req, res) {
     res.status(500).send("Error interno del servidor");
   }
 });
-app.post('/api/updatecoach', (req, res) => UpdateCoach(req, res));
+app.post('/api/updatecoach', upload.single('ImagenCoach'), (req, res) => UpdateCoach(req, res));
 
 //
 

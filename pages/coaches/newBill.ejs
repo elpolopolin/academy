@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Bill</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100svh;
+      font-size: larger;
+    }
+    </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/webshim/1.16.0/minified/polyfiller.js" integrity="sha512-rkRXZsv4UxDC5Lik3bWgYCKSAH2B8Kbom+jxAv9UMS77A8lZERmqbgFgiO5WtMicwZi/RpKYBO/RSCoWd+g30Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body class="">
+  <main>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">
+            <img src="/logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+            Coach  Area
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="/Account">Account</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/ver-alumnos">My Students</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/register">Register Student</a>
+              </li>
+              <li class="nav-item">
+                <form id="logoutForm" action="/logout" method="post" style="display: none;">
+                  
+                </form>
+                <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+    <div class="container mt-4  ">
+        <div class="text-center">
+          <h1>New Bill</h1>
+        </div>
+        <form>
+            <div class="mb-3">
+              <label for="client" class="form-label">Client</label>
+              <select class="form-select" id="client" aria-label="Client Select">
+                <option selected disabled>Select Client</option>
+                  <option value="0">Polo</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="typeSelect" class="form-label">Class Type</label>
+              <select class="form-select" id="typeSelect" aria-label="Type Select">
+                <option selected>Select Class Type</option>
+                <option value="Private Class">Private Class</option>
+                <option value="Semi-Private Class">Semi-Private Class</option>
+                <option value="Group Class">Groupal Class</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label for="classLength" class="form-label">Class Length</label>
+              <select class="form-select" id="classLength" aria-label="Class Length Select">
+                <option selected disabled>Select Class Length</option>
+                <option value="0.5">00:30hs</option>
+                <option value="1">01:00hs</option>
+                <option value="1.5">01:30hs</option>
+              </select>
+            </div>
+           
+            <div class="mb-3">
+              
+              <input type="datetime-local" id="classDate" name="classDate"/>
+            </div>
+            <div class="mb-3">
+                <div class="mb-3 hide-inputbtns">
+                    <div class="input-group">
+                      <label for="c2" class="form-label"></label>
+                      <span class="input-group-text">$</span>
+                      <input type="number" placeholder="10.99" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" id="c2" />
+                    </div>
+                  </div>
+              <label for="message" class="form-label">Message for the Client:</label>
+              <textarea class="form-control" id="message" rows="2"></textarea>
+            </div>
+            <button class="btn-primary" type="submit">Create Bill</button>
+        </form>
+    </div>
+
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script>
+    webshims.setOptions('forms-ext', {
+      replaceUI: 'auto',
+      types: 'number'
+    });
+    webshims.polyfill('forms forms-ext');
+  </script>
+  <script>
+    function logout() {
+      // Simula el envío del formulario de logout
+      document.getElementById('logoutForm').submit();
+    }
+  </script>
+</body>
+</html>
