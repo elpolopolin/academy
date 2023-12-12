@@ -10,6 +10,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import {methods as authentication} from "./controllers/authentication.controller.js"
 import {methods as authorization} from "./middlewares/authorization.js";
 
+//Payment
+import paymentRoutes from './src/routes/payment.routes.js'
 
 //Server
 const app = express();
@@ -98,7 +100,8 @@ app.get("/Account", authorization.soloCoaches, async function (req, res) {
 });
 app.post('/api/updatecoach', (req, res) => UpdateCoach(req, res));
 
-//
+//payment
+app.use(paymentRoutes)
 
 
 
