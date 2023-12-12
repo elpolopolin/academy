@@ -8,9 +8,9 @@ dotenv.config();
 const pool = mysql.createPool({
   connectionLimit: 10,
   host: 'sql5.freemysqlhosting.net',
-  user: process.env.SQL_USER ,
-  password: process.env.SQL_PASSWORD ,
-  database: 'sql5668836' 
+  user: process.env.SQL_USER || '',
+  password: process.env.SQL_PASSWORD || '',
+  database: 'sql5669660'
 });
 
 async function getCoaches() {
