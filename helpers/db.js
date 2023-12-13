@@ -2,6 +2,8 @@ import mysql from "mysql";
 import revisarCookie from "./revisarCookies.js";
 import dotenv from "dotenv";
 import path from 'path';
+import bcryptjs from "bcryptjs";
+
 
 dotenv.config();
 
@@ -83,6 +85,81 @@ async function getAllbills() {
   }
 }
 
+async function getunpaidBills() {
+  try {
+    const bills = await new Promise((resolve, reject) => {
+      pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
+        'FROM bills ' +
+        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
+        'WHERE bills.paid = 0 ' +  // Agrega esta línea para filtrar solo facturas no pagadas
+        'ORDER BY bills.billDate DESC', function (err, rows, fields) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+    });
+    // Iterar sobre cada factura y obtener el nombre del entrenador
+    for (const bill of bills) {
+      bill.billDate = formatDate(bill.billDate);
+      bill.classDate = formatDate(bill.classDate);
+    }
+
+    return bills;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getBillsForCurrentMonth() {
+  try {
+    const bills = await new Promise((resolve, reject) => {
+      // Obtén la fecha de inicio y fin del mes actual
+      const currentDate = new Date();
+      const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+      pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
+        'FROM bills ' +
+        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
+        'WHERE ' +
+        'bills.billDate >= ? AND bills.billDate <= ? ' +  // Filtra por el mes actual
+        'ORDER BY bills.billDate DESC', [firstDayOfMonth, lastDayOfMonth], function (err, rows, fields) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+    });
+
+    // Calcular el ingreso del mes (solo facturas pagas)
+    let monthIncome = 0;
+    bills.forEach((bill) => {
+      if (bill.paid === 1) {
+        monthIncome += bill.price;
+      }
+    });
+
+    // Iterar sobre cada factura y obtener el nombre del entrenador
+    for (const bill of bills) {
+      bill.billDate = formatDate(bill.billDate);
+      bill.classDate = formatDate(bill.classDate);
+    }
+
+    // Agregar el campo monthIncome a la respuesta
+    const response = {
+      bills,
+      monthIncome,
+    };
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // traer solo bill a pagar segun id
 async function getBillById(id) {
   try {
@@ -141,6 +218,18 @@ async function getCoaches() {
     });
   });
 }
+async function getStudents() {
+  return new Promise((resolve, reject) => {
+    pool.query('SELECT * FROM students', function (err, rows, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 
 // UPDATE COACH
 async function UpdateCoach(req, res) {
@@ -333,8 +422,51 @@ async function CreateBillDb(coachId, data) {
   });
 }
 
-
+async function registerStudent(req, res) {
+  const students = await getStudents();
+   const fullname = req.body.name;
+   const guardiansname = req.body.guardiansname;
+   const username = fullname.replace(/\s+/g, '');
+   const password = "student";
+   const phonenumber = req.body.phone;
+   const mail = req.body.email;
+   
+   if (!username || !password ) {
+     return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
+   }
+ 
+   // Check if the user already exists
+   const usuarioAResvisar = students.find(student => student.username === username);
+   if (usuarioAResvisar) {
+     return res.status(400).send({ status: "Error", message: "El nombre de usuario ya existe" });
+   }
+ 
+   const salt = await bcryptjs.genSalt();
+   const hashPassword = await bcryptjs.hash(password, salt);
+ 
+   const nuevoUsuario = {
+     username,
+     fullname,
+     guardiansname,
+     password:hashPassword,
+     phonenumber,
+     mail
+   };
+ 
+   // Insert the new user into the "coaches" table
+   const insertQuery = `INSERT INTO students (username, fullname, guardiansname, password, phone, email) VALUES (?, ?, ?, ?, ?, ?)`;
+   pool.query(insertQuery, [nuevoUsuario.username, nuevoUsuario.fullname,  nuevoUsuario.guardiansname, nuevoUsuario.password, nuevoUsuario.phonenumber, nuevoUsuario.mail], function (err, result) {
+     if (err) {
+     // console.error('Error en la consulta SQL:', err);
+       return res.status(500).send({ status: "Error", message: "Error al agregar el nuevo usuario" });
+     } else {
+       return res.status(201).send({ status: "ok", message: `Usuario ${nuevoUsuario.username} agregado`, redirect: "/" });
+     }
+    
+   });
+  
+ }
 
 //
 
-export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage };
+export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent };

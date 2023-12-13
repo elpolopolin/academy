@@ -19,7 +19,7 @@
     <div id="errorContainer"></div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="/mybills">
           <img src="logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
           Coach  Area
         </a>
@@ -29,13 +29,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
+                <a class="nav-link" href="/mybills">Bills</a>
+              </li>
+            <li class="nav-item">
               <a class="nav-link" href="/Account">Account</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/ver-alumnos">My Students</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/register">Register Student</a>
+              <a class="nav-link" href="/registerStudent">Register Student</a>
             </li>
             <li class="nav-item">
               <form id="logoutForm" action="/logout" method="post" style="display: none;">
@@ -47,6 +47,8 @@
         </div>
       </div>
     </nav>
+
+    
     
     <div class="account mt-4">
             <div class="container">
@@ -104,7 +106,7 @@
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="website">Description</label>
-                                    <input type="url" class="form-control" id="description" placeholder=<%= coach.description %>>
+                                    <input type="url" class="form-control" id="description" placeholder="..." >
                                 </div>
                             </div>
                             

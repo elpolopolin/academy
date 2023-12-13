@@ -1,6 +1,6 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage } from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent,  } from "./helpers/db.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
 //Fix para __direname
@@ -64,8 +64,17 @@ app.get("/admin",authorization.soloAdmin,(req,res)=> res.sendFile(__dirname + "/
 
 app.get("/bills",authorization.soloAdmin, async function (req,res) {
   const bills = await getAllbills();
-  console.log(bills)
   res.render(__dirname + "/pages/admin/bills.ejs", {bills});
+});
+app.get("/unpaidbills",authorization.soloAdmin, async function (req,res) {
+  const bills = await getunpaidBills();
+  res.render(__dirname + "/pages/admin/unpaidbills.ejs", {bills});
+});
+app.get("/monthbills",authorization.soloAdmin, async function (req,res) {
+  const all = await getBillsForCurrentMonth();
+  const bills = all.bills;
+  const monthIncome = all.monthIncome;
+  res.render(__dirname + "/pages/admin/monthbills.ejs", {bills, monthIncome});
 });
 
 app.get("/students",authorization.soloAdmin, async function (req,res) {
@@ -84,7 +93,7 @@ app.post('/api/deletecoach',authorization.soloAdmin, (req, res) => deleteCoach(r
 //
 
 //coaches
-app.get("/coaches",authorization.soloCoaches, async function(req,res) {
+app.get("/mybills",authorization.soloCoaches, async function(req,res) {
   const coaches = await getCoaches();
   const coachId = revisarCookie(req, coaches, "id");
   const coachBills = await getBillsbyId(coachId);
@@ -92,6 +101,12 @@ app.get("/coaches",authorization.soloCoaches, async function(req,res) {
   res.render(__dirname + "/pages/coaches/index.ejs", { coachBills });
 });
 
+app.get("/mystudents",authorization.soloCoaches, async function(req,res) {
+  res.render(__dirname + "/pages/coaches/mystudents.ejs");
+});
+app.get("/registerStudent",authorization.soloCoaches, async function(req,res) {
+  res.render(__dirname + "/pages/coaches/registerStudent.ejs");
+});
 
 app.post("/api/newbill",authorization.soloCoaches, (req, res) => CreateBilll(req, res));
 
@@ -109,6 +124,7 @@ app.get("/Account", authorization.soloCoaches, async function (req, res) {
   }
 });
 app.post('/api/updatecoach', (req, res) => UpdateCoach(req, res));
+app.post('/api/registerStudent',authorization.soloCoaches, (req, res) => registerStudent(req, res));
 
 //payment
 app.use(paymentRoutes)

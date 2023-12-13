@@ -10,13 +10,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha384-pzjw8/4ov1D+PBbXDAvjsd/6Aqbd04uZxX1N1nIapJl3R6Uq0lf1a8TsmBVIbofg" crossorigin="anonymous">
         <style>
-          body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100svh;
-            font-size: larger;
-          }
-          </style>
+            body {
+                margin: 0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                min-height: 100vh;
+                font-size: larger;
+            }
+    
+            .table-header {
+                background-color: #f8f9fa;
+                padding: 10px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            h1{
+               
+                font-size: 1.5rem;
+                font-weight: bold;
+                cursor: pointer;
+            }
+    
+            .table-header:hover {
+                background-color: #e9ecef;
+            }
+            
+        
+        </style>
 </head>
 
 <body>
@@ -57,15 +78,15 @@
         </nav>
        
         <div class="container mt-4 ">
-
+           
             <ul class="pagination mb-0">
-                <li class="page-item active"><a class="page-link" href="/bills">All Bills</a></li>
-                <li class="page-item"><a class="page-link" href="/monthbills">Month Bills</a></li>
+                <li class="page-item"><a class="page-link" href="/bills">All Bills</a></li>
+                <li class="page-item active"><a class="page-link" href="/monthbills">Month Bills</a></li>
                 <li class="page-item"><a class="page-link" href="/unpaidbills">Unpaid Bills</a></li>
               </ul>
             <div class="p-2 shadow-lg ">
             <div class="table-responsive ">
-              
+               <div class="d-flex table-header gap-2" onclick="toggleTable()"> <h1 class="" >Month Income: </h1> <h1 class=" mostrar d-none"> <%= monthIncome %> usd</h1> </div>
                 <table id="example" class="table table-striped  table-bordered">
                     <thead>
                         <tr>
@@ -108,6 +129,7 @@
             </div>
           </div>
         </div>
+
     </main>
     <script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
@@ -125,6 +147,10 @@
         function logout() {
             // Simula el envío del formulario de logout
             document.getElementById('logoutForm').submit();
+        }
+
+        function toggleTable() {
+            $('.mostrar').toggleClass('d-none'); // Alternar visibilidad del elemento
         }
     
         </script>

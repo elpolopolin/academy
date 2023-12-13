@@ -11,7 +11,7 @@ function soloAdmin(req,res,next){
   const admin = isAdmin(req);
 
   if(logueado && admin) return next();
- return res.redirect("/coaches")
+ return res.redirect("/Account")
 }
 
 function soloCoaches(req,res,next){
