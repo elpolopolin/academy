@@ -333,6 +333,23 @@ async function UpdateCoachAdmin(req, res) {
 
 }
 
+function updateBill(billId) {
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'UPDATE bills SET paid=1 WHERE id = ?',
+      [billId],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
 async function deleteCoach(req, res) {
   // console.log("update coaches desde admin")
   const coaches = await getCoaches();
@@ -469,4 +486,4 @@ async function registerStudent(req, res) {
 
 //
 
-export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent };
+export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBill, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent };

@@ -50,7 +50,7 @@ app.get("/viewbill/:id", async (req, res) => {
   try {
     let bill = await getBillById(req.params.id)
     if(bill){
-      res.render(__dirname + "/pages/viewbill.ejs", {bill});
+      res.render(__dirname + "/pages/payment/viewbill.ejs", {bill});
     }else{
       res.send("bill was not found")
     }

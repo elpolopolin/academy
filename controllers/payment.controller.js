@@ -1,7 +1,9 @@
 import Stripe from "stripe"
+import dotenv from "dotenv";
 
+dotenv.config();
 //key of stripe account
-const stripe = new Stripe('sk_test_51OMafjFUIUa6MISLznSqI87CMFxqw1nicGA1EdIqYwuL7zt8SHzUxZp4PEKQCX2S6GeLke52q8ajqUwk575vIS2k00kODSMDCH')
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export const createSession = async (req, res) => {
     console.log(req.body)
@@ -20,7 +22,7 @@ export const createSession = async (req, res) => {
             }
         ],
         mode: 'payment',
-        success_url: 'http://localhost:4000/success',
+        success_url: 'http://localhost:4000/success/' + req.body.billId,
         cancel_url: 'http://localhost:4000/cancel'
     })
 

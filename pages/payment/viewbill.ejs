@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin</title>
+    <title>Bill</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
@@ -73,12 +73,20 @@
                 </div>
                 <hr style="border: 2px solid black" />
               </div>
+
+              <div id="paid" style="font-size: 50%" data-bill-paid="<%= bill.paid %>">
+              <button class="btn" id="checkout" style="margin: auto; display: block; width: 15%;"></button> 
+            </div>
+              
               <div class="text-center" style="margin-top: 90px">
                 <p>Polonsky Tennis Academy</p>
+                <p id="id" style="font-size: 50%;" data-bill-id="<%= bill.id %>"><%= bill.id %></p>
               </div>
             </div>
 
-            <button class="btn btn-primary" id="checkout">Pay</button>
+            
+            
+            
           </div>
         </div>
       </div>
@@ -97,11 +105,24 @@
         $("#example").DataTable();
       });
 
+      window.onload = async function () {
+        var paid = document.getElementById("paid").dataset.billPaid
+        
+        if(paid != 1){
+          document.getElementById('checkout').classList.add('btn-primary')
+          document.getElementById('checkout').textContent = 'Pay'
+        } else {
+          document.getElementById("paid").removeChild(document.getElementById("checkout"))
+          document.getElementById("paid").textContent = "Already Paid";
+        }
+      };
+      
       const button = document.getElementById("checkout");
       button.addEventListener("click", async () => {
         const params = {
           length: document.getElementById('length').dataset.billLength,
           price: document.getElementById('price').dataset.billPrice,
+          billId: document.getElementById('id').dataset.billId,
         };
 
         const res = await fetch("/create-checkout-session", {
