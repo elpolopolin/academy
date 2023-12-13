@@ -38,7 +38,7 @@
                             <a class="nav-link" href="/ver-coaches">Coaches</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/ver-alumnos">Students</a>
+                            <a class="nav-link" href="/students">Students</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/Bills">Bills</a>
@@ -211,7 +211,7 @@
                     age: age,
                     description: "update de admin",
                 };
-                console.log(valoresUpdate);
+               // console.log(valoresUpdate);
 
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 
@@ -237,7 +237,7 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data);
+                       // console.log(data);
                         location.reload()
                     })
                     .catch(error => {
@@ -249,24 +249,31 @@
 
       
 
-    function deleteCoach(coachId) {
-        console.log('Delete coach with ID:', coachId);
+                function deleteCoach(coachId) {
+  
+    const confirmDelete = confirm('Are you sure you want to delete this coach?');
+
+    if (confirmDelete) {
         fetch('/api/deletecoach', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ id: coachId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.error('Error updating coach:', error);
-                    });
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: coachId })
+        })
+        .then(response => response.json())
+        .then(data => {
+           // console.log(data);
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error updating coach:', error);
+        });
+    } else {
+       
+      //  console.log('Delete canceled');
     }
+}
     </script>
 </body>
 
