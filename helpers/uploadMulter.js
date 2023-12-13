@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
   
     // Define una función para filtrar archivos de imagen
     const fileFilter = (req, file, cb) => {
+      console.log("estoy en multer");
       const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif']; // Agrega las extensiones permitidas aquí
       const extname = path.extname(file.originalname).toLowerCase();
   

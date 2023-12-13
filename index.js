@@ -1,6 +1,6 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, } from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage } from "./helpers/db.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
 //Fix para __direname
@@ -9,7 +9,8 @@ import {fileURLToPath} from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import {methods as authentication} from "./controllers/authentication.controller.js"
 import {methods as authorization} from "./middlewares/authorization.js";
-import { upload } from "./helpers/uploadMulter.js";
+//import { upload } from "./helpers/uploadMulter.js";
+import multer from 'multer';
 
 //Payment
 import paymentRoutes from './src/routes/payment.routes.js'
@@ -67,6 +68,12 @@ app.get("/bills",authorization.soloAdmin, async function (req,res) {
   res.render(__dirname + "/pages/admin/bills.ejs", {bills});
 });
 
+app.get("/students",authorization.soloAdmin, async function (req,res) {
+  const bills = await getAllbills();
+  console.log(bills)
+  res.render(__dirname + "/pages/admin/students.ejs", {bills});
+});
+
 app.get("/ver-coaches",authorization.soloAdmin, async function(req,res) {
   const coaches = await getCoaches();
   res.render(__dirname + "/pages/admin/coaches.ejs", { coaches });
@@ -101,11 +108,34 @@ app.get("/Account", authorization.soloCoaches, async function (req, res) {
     res.status(500).send("Error interno del servidor");
   }
 });
-app.post('/api/updatecoach', upload.single('ImagenCoach'), (req, res) => UpdateCoach(req, res));
+app.post('/api/updatecoach', (req, res) => UpdateCoach(req, res));
 
 //payment
 app.use(paymentRoutes)
 
+//upload coach image
+const multerMiddleware = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'public/imagenesCoaches');
+    },
+    filename: function (req, file, cb) {
+      const extname = path.extname(file.originalname);
+      const filename = `${Date.now()}${extname}`;
+      cb(null, filename);
+    },
+  }),
+  fileFilter: function (req, file, cb) {
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+    const extname = path.extname(file.originalname).toLowerCase();
 
+    if (allowedExtensions.includes(extname)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Solo se permiten archivos de imagen con extensiones .jpg, .jpeg, .png o .gif'), false);
+    }
+  },
+});
+app.post('/api/uploadimagecoach',authorization.soloCoaches , multerMiddleware.single('imagenCoach'), (req, res) => updateCoachImage(req, res));
 
 export default app;

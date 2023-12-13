@@ -57,8 +57,12 @@
                         <div class="account-settings">
                             <div class="user-profile">
                                 <div class="user-avatar">
-                                    <button type="button" class="btn btn-warning" onclick="document.getElementById('imageUpload').click()"> <i class="fas fa-edit"></i> </button>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin">
+                                    
+                                    <% if (coach.profilepicture === null || coach.profilepicture === '') { %>
+                                        <img src="/nopicture.jpg" alt="No Picture" class="img-fluid mx-auto d-block" style="max-height: 30vh;  width: 100%;">
+                                    <% } else { %>
+                                        <img src="<%= coach.profilepicture %>" alt="User Avatar" class="img-fluid mx-auto d-block" style="max-height: 30vh; width: 100%;">
+                                    <% } %>
                                 </div>
                                 <h5 class="user-name mt-2"><%= coach.name %> <%= coach.surname %></h5>
                                 <h6 class="text-decoration-underline"><%= coach.mail %></h6>
@@ -74,7 +78,7 @@
                 <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
                 <div class="card h-100">
                     <div class="card-body">
-                        <form id="updateForm" enctype="multipart/form-data">
+                        <form id="updateForm" >
                         <div class="row gutters">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <h6 class="mb-2 text-primary">Personal Details</h6>
@@ -103,13 +107,16 @@
                                     <input type="url" class="form-control" id="description" placeholder=<%= coach.description %>>
                                 </div>
                             </div>
-                            <input type="file" class="form-control" id="imageUpload" name="ImagenCoach" accept="image/png, image/jpeg" style="display: none;">
+                            
                         </div>
                         
-                        <div class="row gutters">
+                        <div class="row gutters mt-2">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <div class="mt-2 text-right">
                                     <button type="button" id="submit" name="submit" class="btn btn-primary" onclick="updateData()">Update</button>
+                                    <button type="button" class="btn btn-warning ms-2" onclick="modalFile()">
+                                        <i class="fa-solid fa-image"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -186,6 +193,7 @@
         .then(response => response.json())
         .then(data => {
             console.log(data);
+            location.reload()
         })
         .catch(error => {
             console.error('Error updating coach:', error);
@@ -193,6 +201,72 @@
     }
 }
 
+function modalFile() {
+            // Crear el contenido del modal
+            const modalContent = document.createElement('div');
+    modalContent.innerHTML = `
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div id="errorContainer"></div> 
+            <div class="modal-dialog justify-content-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Upload profile picture</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form onsubmit="uploadImage(event)" class="needs-validation" id="uploadform" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <input type="file" class="form-control-file" id="imagenCoach" name="imagenCoach" accept="image/png, image/jpeg">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    // Añadir el modal al cuerpo del documento
+    document.body.appendChild(modalContent);
+    // Mostrar el modal
+    const editModal = new bootstrap.Modal(document.getElementById(`editModal`));
+    editModal.show();
+}
+
+function uploadImage(event) {
+    event.preventDefault();
+    //console.log("estoy en upload");
+    // Obtener el formulario y los datos del archivo
+    const form = document.getElementById('uploadform');
+    const fileInput = form.querySelector('#imagenCoach');
+    //console.log(fileInput);
+   // console.log(form);
+
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        console.error('No se ha seleccionado ningún archivo.');
+        return;
+    }
+    const formData = new FormData();
+
+    // Agregar datos del formulario al FormData
+    formData.append('imagenCoach', fileInput.files[0]);
+
+    fetch('/api/uploadimagecoach', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+       // console.log(data);
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error uploading image:', error);
+    });
+
+}
 </script>
 
 </body>

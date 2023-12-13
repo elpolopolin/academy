@@ -26,7 +26,7 @@ async function getCoachbyId(id) {
   });
 }
 
-const host = "localhost:4000";
+const host = "http://localhost:4000";
 
 async function getCoachesElement(element) {
   return new Promise((resolve, reject) => {
@@ -163,8 +163,7 @@ async function UpdateCoach(req, res) {
 
 function updateCoachInDatabase(coachId, data) {
   const valoresUpdate = data.body;
-  const extname = data.file ? path.extname(data.file.filename) : '';
-  const imagenRuta = data.file ? `${host}/imagenesCoaches/${data.file.filename}` : '';
+  
           
   return new Promise((resolve, reject) => {
     pool.query(
@@ -180,6 +179,29 @@ function updateCoachInDatabase(coachId, data) {
     );
   });
 }
+
+async function updateCoachImage(req, res) {
+  try {
+
+    console.log('Req.File:', req.file);
+    const extname = req.file ? path.extname(req.file.filename) : '';
+    const imagenRuta = req.file ? `${host}/imagenesCoaches/${req.file.filename}` : '';
+    console.log('Imagen Ruta:', imagenRuta);
+    const coaches = await getCoaches();
+    const coachId = revisarCookie(req, coaches, "id");
+    const result = await pool.query(
+      'UPDATE coaches SET profilepicture = ? WHERE id = ?',
+      [imagenRuta ,coachId]
+    );
+    console.log('Update Result:', result);
+    res.json({ success: true, message: 'Image updated successfully' });
+  } catch (error) {
+    console.error('Error updating image:', error);
+    res.status(500).json({ success: false, message: 'Error updating image' });
+  }
+}
+
+
 
 function updateCoachInDatabaseAdmin(coachId, valoresUpdate) {
   return new Promise((resolve, reject) => {
@@ -315,4 +337,4 @@ async function CreateBillDb(coachId, data) {
 
 //
 
-export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll };
+export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage };
