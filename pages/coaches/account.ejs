@@ -162,19 +162,19 @@
     };
 
     const valoresUpdate = {
-        age: inputFullName.value || currentCoach.age,
-        email: inputEmail.value || currentCoach.email,
-        phone: inputPhone.value || currentCoach.phone,
+        age: inputFullName.value || currentCoach.age || null,
+        email: inputEmail.value || currentCoach.email || "null@null.com",
+        phone: inputPhone.value || currentCoach.phone|| null,
         description: inputDescription.value || currentCoach.description
-    };
+        };
     //console.log(valoresUpdate);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isEmailValid = emailRegex.test(valoresUpdate.email);
+    
     const isAgeValid = valoresUpdate.age >= 1 && valoresUpdate.age <= 99;
     const errorContainer = document.getElementById('errorContainer');
     //console.log(isAgeValid, isEmailValid)
-    if (!isEmailValid || !isAgeValid) {
+    if ( !isAgeValid) {
         console.log("error")
         const errorCard = `
                 <div class="alert alert-danger alert-dismissible fade show fixed-top mx-auto mt-5" role="alert">

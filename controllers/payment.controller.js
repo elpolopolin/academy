@@ -13,7 +13,7 @@ export const createSession = async (req, res) => {
                 price_data: {
                     product_data: {
                         name: 'Polonsky Tennis Academy',
-                        description: req.body.length + 'hr Class',
+                        description: req.body.billId + '',
                     },
                     currency: 'usd',
                     unit_amount: (req.body.price * 100)

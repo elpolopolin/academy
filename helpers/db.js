@@ -61,20 +61,24 @@ async function getBillsbyId(id) {
 async function getAllbills() {
   try {
     const bills = await new Promise((resolve, reject) => {
-      pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
+      pool.query(
+        'SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname, students.username ' +
         'FROM bills ' +
         'INNER JOIN coaches ON bills.coachId = coaches.id ' +
-        'ORDER BY bills.billDate DESC', function (err, rows, fields) {
+        'INNER JOIN students ON bills.clientId = students.id ' +
+        'ORDER BY bills.billDate DESC',
+        function (err, rows, fields) {
           if (err) {
             reject(err);
           } else {
             resolve(rows);
           }
-        });
+        }
+      );
     });
+
     // Iterar sobre cada factura y obtener el nombre del entrenador
     for (const bill of bills) {
-
       bill.billDate = formatDate(bill.billDate);
       bill.classDate = formatDate(bill.classDate);
     }

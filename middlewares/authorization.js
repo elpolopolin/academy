@@ -3,31 +3,33 @@ import dotenv from "dotenv";
 import { getCoaches } from "../helpers/db.js";
 
 dotenv.config();
+//const coaches = await getCoaches();
+  
+async function soloAdmin(req, res, next) {
+  const coaches = await getCoaches(); 
+  const logueado = revisarCookie(req, coaches);
+  const admin = isAdmin(req, coaches);
 
-const coaches = await getCoaches();
+  if (logueado && admin) return next();
+  return res.redirect("/Account");
+}
+async function soloCoaches(req, res, next) {
+  const coaches = await getCoaches(); 
+  const logueado = revisarCookie(req, coaches);
 
-function soloAdmin(req,res,next){
-  const logueado = revisarCookie(req);
-  const admin = isAdmin(req);
+  if (logueado) return next();
+  return res.redirect("/");
+}
+async function soloPublico(req, res, next) {
+  const coaches = await getCoaches(); 
+  const logueado = revisarCookie(req, coaches);
 
-  if(logueado && admin) return next();
- return res.redirect("/Account")
+  if (!logueado) return next();
+  return res.redirect("/admin");
 }
 
-function soloCoaches(req,res,next){
-  const logueado = revisarCookie(req);
-  if(logueado) return next();
-  return res.redirect("/")
-}
-
-function soloPublico(req,res,next){
-  const logueado = revisarCookie(req);
-  if(!logueado) return next();
-  return res.redirect("/admin")
-}
-
-function revisarCookie(req){
-  try{
+ function revisarCookie(req, coaches){
+ try{
     const cookieJWT = req.headers.cookie.split("; ").find(cookie => cookie.startsWith("jwt=")).slice(4);
     const decodificada = jsonwebtoken.verify(cookieJWT,process.env.JWT_SECRET);
     // console.log(decodificada)
@@ -43,7 +45,8 @@ function revisarCookie(req){
   }
 }
 
-function isAdmin(req) {
+ function isAdmin(req, coaches) {
+ 
   try{
     const cookieJWT = req.headers.cookie.split("; ").find(cookie => cookie.startsWith("jwt=")).slice(4);
     const decodificada = jsonwebtoken.verify(cookieJWT,process.env.JWT_SECRET);
