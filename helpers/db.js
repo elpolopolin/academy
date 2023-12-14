@@ -112,6 +112,33 @@ async function getunpaidBills() {
   }
 }
 
+async function getInProgressBills() {
+  try {
+    const bills = await new Promise((resolve, reject) => {
+      pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
+        'FROM bills ' +
+        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
+        'WHERE bills.paid = 0 AND bills.sessionId IS NOT NULL ' +  // Agrega esta línea para filtrar solo facturas no pagadas
+        'ORDER BY bills.billDate DESC', function (err, rows, fields) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+    });
+    // Iterar sobre cada factura y obtener el nombre del entrenador
+    for (const bill of bills) {
+      bill.billDate = formatDate(bill.billDate);
+      bill.classDate = formatDate(bill.classDate);
+    }
+
+    return bills;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function getBillsForCurrentMonth() {
   try {
     const bills = await new Promise((resolve, reject) => {
@@ -503,4 +530,4 @@ async function registerStudent(req, res) {
 
 //
 
-export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent };
+export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent };

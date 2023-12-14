@@ -1,134 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facturas</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100svh;
-      font-size: larger;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facturas</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100svh;
+        font-size: larger;
+      }
+
+      .mt-100 {
+        margin-top: 100px;
+      }
+
+      .modal-title {
+        font-weight: 900;
+      }
+
+      .modal-content {
+        border-radius: 13px;
+      }
+
+      .modal-body {
+        color: #3b3b3b;
+      }
+
+      .img-thumbnail {
+        border-radius: 33px;
+        width: 61px;
+        height: 61px;
+      }
+
+      .fab:before {
+        position: relative;
+        top: 13px;
+      }
+
+      .smd {
+        width: 200px;
+        font-size: small;
+        text-align: center;
+      }
+
+      .modal-footer {
+        display: block;
+      }
+
+      .ur {
+        border: none;
+        background-color: #e6e2e2;
+        border-bottom-left-radius: 4px;
+        border-top-left-radius: 4px;
+      }
+
+      .cpy {
+        border: none;
+        background-color: #e6e2e2;
+        border-bottom-right-radius: 4px;
+        border-top-right-radius: 4px;
+        cursor: pointer;
+      }
+
+      button.focus,
+      button:focus {
+        outline: 0;
+        box-shadow: none !important;
+      }
+
+      .ur.focus,
+      .ur:focus {
+        outline: 0;
+        box-shadow: none !important;
+      }
+
+      .message {
+        font-size: 11px;
+        color: #ee5535;
+      }
     </style>
-</head>
-<body class="">
-  <main>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/mybills">
-          <img src="logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
-          Coach  Area
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+  </head>
+  <body id="body">
+    <main>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/mybills">
+            <img
+              src="logo.jpg"
+              alt="Logo"
+              width="30"
+              height="30"
+              class="d-inline-block align-top"
+            />
+            Coach Area
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="/mybills">Bills</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/Account">Account</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/registerStudent">Register Student</a>
+              </li>
+              <li class="nav-item">
+                <form
+                  id="logoutForm"
+                  action="/logout"
+                  method="post"
+                  style="display: none"
+                ></form>
+                <a class="nav-link" href="#" id="logoutLink" onclick="logout()"
+                  >Log out</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container mt-4" id="container">
+        <div class="text-center">
+          <h1>Your Bills</h1>
+        </div>
+
+        <button
+          type="button"
+          onclick="newbill()"
+          class="btn btn-primary float-right"
+        >
+          New Bill
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="/mybills">Bills</a>
-            </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/Account">Account</a>
-          </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/registerStudent">Register Student</a>
-            </li>
-            <li class="nav-item">
-              <form id="logoutForm" action="/logout" method="post" style="display: none;">
-                
-              </form>
-              <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
-            </li>
-          </ul>
+
+        <div class="py-5">
+          <div class="container">
+            <div class="row hidden-md-up">
+              <% for (let i = 0; i < coachBills.length; i++) { %>
+              <div class="col-md-4" style="margin-top: 5%">
+                <div class="card p-4">
+                  <div class="card-block">
+                    <h4 class="card-title">Bill Id: <%= coachBills[i].id %></h4>
+                    <h6 class="card-subtitle text-muted">
+                      Client Id: <%= coachBills[i].clientId %>
+                    </h6>
+                    <p class="card-text p-y-1" style="font-size: 75%;">
+                      <%= coachBills[i].length %>hr <%= coachBills[i].type %>
+                    </p>
+                    <b
+                      class="card-text p-y-1"
+                      style="display: block; text-align: end"
+                      >$<%= coachBills[i].price %></b
+                    >
+
+                    <% if (coachBills[i].paid === 1) { %>
+                      <b class="text-success fw-bold" style="display: block; text-align: end">PAID</b>
+                    <% } else { %>
+                      <b class="text-danger fw-bold" style="display: block; text-align: end">NOT PAID</b>
+                    <% } %>
+
+                    <button
+                      type="button"
+                      class="btn btn-primary mx-auto"
+                      onclick="showModal('<%= coachBills[i].id %>')"
+                    >
+                      Send Bill
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="modal fade"
+                id="myModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="myModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="myModalLabel">Send Bill</h5>
+
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                        onclick="closeModal()"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+
+                    <div class="modal-body">
+                      <p id="modal-billid">Bill ID:</p>
+                    </div>
+
+                    <div class="modal-footer">
+                      <a href="http://localhost:4000/viewbill/" id="viewLink"
+                        >View Bill Online</a
+                      >
+
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="copyLink"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <% } %>
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
+    </main>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+    <script src="https://pingendo.com/assets/bootstrap/bootstrap-4.0.0-alpha.6.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const elementosFecha = document.querySelectorAll("#fechaContainer");
 
-    <div class="container mt-4  ">
-      <div class="text-center">
-        <h1>Your Bills</h1>
-      </div>
-
-      <div class="table-responsive">
-        <table class="table table-bordered ">
-          <thead>
-            <tr>
-              <th scope="col text-danger">Id</th>
-              <th scope="col">Client Name</th>
-              <th scope="col">Service Type</th>
-              <th scope="col">Class Length</th>
-              <th scope="col">Class Price</th>
-              <th scope="col">Bill Date</th>
-              <th scope="col">Class Date</th>
-              <th scope="col">Paid</th>
-              <th scope="col"><button type="button" onclick="newbill()"  class="btn btn-primary">New Bill</button></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (let i = 0; i < coachBills.length; i++) { %>
-              <tr>
-                <th scope="row"><%= coachBills[i].id %></th>
-                <td><%= coachBills[i].clientId %></td>
-                <td><%= coachBills[i].type %></td>
-                <td><%= coachBills[i].length %> hr</td>
-                <td>$<%= coachBills[i].price %></td>
-                <td id="fechaContainer"><%= coachBills[i].billDate %></td>
-                <td id="fechaContainer"><%= coachBills[i].classDate %></td>
-                <td>
-                  <% if (coachBills[i].paid === 1) { %>
-                    <span class="text-success fw-bold">PAID</span>
-                  <% } else { %>
-                    <span class="text-danger fw-bold">NOT PAID</span>
-                  <% } %>
-                </td>
-                <td> <button class="btn btn-secondary ">Send Bill</button> </td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
-</div>
-
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const elementosFecha = document.querySelectorAll('#fechaContainer');
-    
-      elementosFecha.forEach(elemento => {
-        // Obtener la fecha actual
+        elementosFecha.forEach((elemento) => {
+          // Obtener la fecha actual
           const fechaObjeto = new Date(elemento.innerHTML);
-        
-        // Formatear la fecha como desees (por ejemplo, DD/MM/YYYY)
-        const dia = String(fechaObjeto.getDate()).padStart(2, '0');
-        const mes = String(fechaObjeto.getMonth() + 1).padStart(2, '0');
-        const año = fechaObjeto.getFullYear();
 
-        const hora = String(fechaObjeto.getHours()).padStart(2, '0');
-        const minuto = String(fechaObjeto.getMinutes()).padStart(2, '0');
-      
-        // Crear una cadena con el formato deseado
-        const fechaFormateada = `${mes}/${dia}/${año} - ${hora}:${minuto}`;
-      
-        // Mostrar la fecha en el elemento HTML
-        elemento.textContent = fechaFormateada;
-        
+          // Formatear la fecha como desees (por ejemplo, DD/MM/YYYY)
+          const dia = String(fechaObjeto.getDate()).padStart(2, "0");
+          const mes = String(fechaObjeto.getMonth() + 1).padStart(2, "0");
+          const año = fechaObjeto.getFullYear();
+
+          const hora = String(fechaObjeto.getHours()).padStart(2, "0");
+          const minuto = String(fechaObjeto.getMinutes()).padStart(2, "0");
+
+          // Crear una cadena con el formato deseado
+          const fechaFormateada = `${mes}/${dia}/${año} - ${hora}:${minuto}`;
+
+          // Mostrar la fecha en el elemento HTML
+          elemento.textContent = fechaFormateada;
+        });
       });
-    });
-  </script>
-  <script>
-    function logout() {
-      // Simula el envío del formulario de logout
-      document.getElementById('logoutForm').submit();
-    }
+    </script>
+    <script>
+      function copyToClipboard(text) {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(
+            () => {
+              // Success message
+              console.log("Copied to clipboard!");
+            },
+            (error) => {
+              // Error handling
+              console.error("Error copying to clipboard:", error);
+            }
+          );
+        } else {
+          // Fallback for older browsers
+          const textElement = document.createElement("textarea");
+          textElement.value = text;
+          document.body.appendChild(textElement);
+          textElement.select();
+          document.execCommand("copy");
+          document.body.removeChild(textElement);
+        }
+      }
+      function showModal(id) {
+        document.getElementById("modal-billid").textContent = "Bill Id:" + id;
+        document.getElementById("viewLink").href =
+          "http://localhost:4000/viewbill/";
+        document.getElementById("viewLink").href += id;
+        document.getElementById("copyLink").onclick = copyToClipboard(
+          document.getElementById("viewLink").href
+        );
 
-    function newbill() {
-            
-           // Crear el contenido del modal
-        const modalContent = document.createElement('div');
+        // Muestra el modal
+        $("#myModal").modal("show");
+      }
+
+      function closeModal() {
+        // Cierra el modal
+        $("#myModal").modal("hide");
+      }
+
+      function logout() {
+        // Simula el envío del formulario de logout
+        document.getElementById("logoutForm").submit();
+      }
+
+      function newbill() {
+        // Crear el contenido del modal
+        const modalContent = document.createElement("div");
         modalContent.innerHTML = `
        
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -207,51 +400,55 @@
         // Añadir el modal al cuerpo del documento
         document.body.appendChild(modalContent);
         // Mostrar el modal
-        const editModal = new bootstrap.Modal(document.getElementById(`editModal`));
+        const editModal = new bootstrap.Modal(
+          document.getElementById(`editModal`)
+        );
         editModal.show();
 
-        document.getElementById('updateForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-    createBill();
-      });
-    } 
+        document
+          .getElementById("updateForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            createBill();
+          });
+      }
 
-  
+      function createBill() {
+        // Obtener los valores de los campos del formulario
+        const client = document.getElementById("client").value;
+        const classType = document.getElementById("typeSelect").value;
+        const classLength = document.getElementById("classLength").value;
+        const classMessage = document.getElementById("message").value;
+        const classDate = document.getElementById("classDate").value;
+        const amount = document.getElementById("c2").value;
 
-function createBill() {
-    // Obtener los valores de los campos del formulario
-    const client = document.getElementById('client').value;
-    const classType = document.getElementById('typeSelect').value;
-    const classLength = document.getElementById('classLength').value;
-    const classMessage = document.getElementById('message').value;
-    const classDate = document.getElementById('classDate').value;
-    const amount = document.getElementById('c2').value;
-
-   fetch("http://localhost:4000/api/newbill", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                client,
-                classType,
-                classLength,
-                classMessage,
-                classDate,
-                amount
-            })
+        fetch("http://localhost:4000/api/newbill", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            client,
+            classType,
+            classLength,
+            classMessage,
+            classDate,
+            amount,
+          }),
         })
-        .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.error('Error updating coach:', error);
-        });
-   
-}
-  </script>
-   <script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
-</body>
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            location.reload();
+          })
+          .catch((error) => {
+            console.error("Error updating coach:", error);
+          });
+      }
+    </script>
+    <script
+      src="https://kit.fontawesome.com/2e4e857ba3.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
