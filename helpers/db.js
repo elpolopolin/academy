@@ -333,7 +333,7 @@ async function UpdateCoachAdmin(req, res) {
 
 }
 
-function updateBill(billId) {
+function updateBillState(billId) {
 
   return new Promise((resolve, reject) => {
     pool.query(
@@ -349,6 +349,23 @@ function updateBill(billId) {
     );
   });
 }
+
+function updateBillSession(billId, sessionId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'UPDATE bills SET sessionId=? WHERE id = ?',
+      [sessionId, billId],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
 
 async function deleteCoach(req, res) {
   // console.log("update coaches desde admin")
@@ -486,4 +503,4 @@ async function registerStudent(req, res) {
 
 //
 
-export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBill, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent };
+export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent };
