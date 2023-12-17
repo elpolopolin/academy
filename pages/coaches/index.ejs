@@ -477,8 +477,10 @@
         document.getElementById("modal-link").value =
           document.getElementById("modal-link").href;
         document.getElementById("mail").href =
-          "mailto:?subject=" + document.getElementById("modal-link").href;
-          document.getElementById("wpp").href = "https://wa.me/?text=You can pay your Polonsky Tennis Academy bill here: " + document.getElementById("modal-link").href
+          "mailto:?subject=Link to pay your bill&body=You can pay your Polonsky Tennis Academy bill here: " + document.getElementById("modal-link").href;
+        document.getElementById("wpp").href =
+          "https://wa.me/?text=You can pay your Polonsky Tennis Academy bill here: " +
+          document.getElementById("modal-link").href;
 
         // Muestra el modal
         $("#myModal").modal("show");
