@@ -3,6 +3,7 @@ import revisarCookie from "./revisarCookies.js";
 import dotenv from "dotenv";
 import path from 'path';
 import bcryptjs from "bcryptjs";
+import revisarCookie2 from "./revisarCookie2.js";
 
 
 dotenv.config();
@@ -41,28 +42,26 @@ async function registerStudent(req, res) {
   const students = await getStudents();
    const fullname = req.body.name;
    const guardiansname = req.body.guardiansname;
-   const username = req.body.username;
    const password = req.body.password;;
    const phonenumber = req.body.phone;
    const mail = req.body.email;
    const address = req.body.address;
    const club = req.body.club;
    
-   if (!username || !password ) {
+   if (!mail || !password ) {
      return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
    }
  
    // Check if the user already exists
-   const usuarioAResvisar = students.find(student => student.username === username);
+   const usuarioAResvisar = students.find(student => student.email === mail);
    if (usuarioAResvisar) {
-     return res.status(400).send({ status: "Error", message: "El nombre de usuario ya existe" });
+     return res.status(400).send({ status: "Error", message: "El Email de usuario ya existe" });
    }
  
    const salt = await bcryptjs.genSalt();
    const hashPassword = await bcryptjs.hash(password, salt);
  
    const nuevoUsuario = {
-     username,
      fullname,
      guardiansname,
      password:hashPassword,
@@ -73,8 +72,8 @@ async function registerStudent(req, res) {
    };
  
    // Insert the new user into the "coaches" table
-   const insertQuery = `INSERT INTO students (username, fullname, guardiansname, password, phone, email, address, club) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-   pool.query(insertQuery, [nuevoUsuario.username, nuevoUsuario.fullname,  nuevoUsuario.guardiansname, nuevoUsuario.password, nuevoUsuario.phonenumber, nuevoUsuario.mail, nuevoUsuario.address, nuevoUsuario.club], function (err, result) {
+   const insertQuery = `INSERT INTO students ( fullname, guardiansname, password, phone, email, address, club) VALUES ( ?, ?, ?, ?, ?, ?, ?)`;
+   pool.query(insertQuery, [ nuevoUsuario.fullname,  nuevoUsuario.guardiansname, nuevoUsuario.password, nuevoUsuario.phonenumber, nuevoUsuario.mail, nuevoUsuario.address, nuevoUsuario.club], function (err, result) {
      if (err) {
      // console.error('Error en la consulta SQL:', err);
        return res.status(500).send({ status: "Error", message: "Error al agregar el nuevo usuario" });
@@ -142,9 +141,9 @@ function updateStudentState(studentId) {
   });
 }
 
-async function getIdbyUsername(username) {
+async function getIdbyUsername(email) {
   return new Promise((resolve, reject) => {
-    pool.query('SELECT id FROM students WHERE username = ?', [username], function (err, rows, fields) {
+    pool.query('SELECT id FROM students WHERE email = ?', [email], function (err, rows, fields) {
       if (err) {
         reject(err);
       } else {
@@ -221,4 +220,55 @@ function deleteUserBd(id) {
   });
 }
 
- export {registerStudent, updateStudentSession, getInProgressStudents, updateStudentState, getIdbyUsername, getStudentById, deleteUser, deleteUnpaidStudents}
+async function getcoachSelected(id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'SELECT studentCoach FROM students WHERE id = ?',
+      [id],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          if (result.length > 0) {
+            // Extraer el valor del studentCoach del primer elemento
+            const studentCoachId = result[0].studentCoach;
+            resolve(studentCoachId);
+          } else {
+            resolve(null);
+          }
+        }
+      }
+    );
+  });
+}
+async function updateStudentsCoach(req, res) {
+  const students = await getStudents();
+  const studentId = revisarCookie2(req, students, "id");
+  const coachId = req.body.coachId;
+    try {
+      const result = await updateStudentsCoachDB(coachId, studentId);
+      res.json({ success: true, message: 'student updated successfully', result });
+    } catch (error) {
+      console.error('Error updating coach:', error);
+      res.status(500).json({ success: false, message: 'Error updating coach' });
+    }
+ 
+}
+async function updateStudentsCoachDB(idCoach, idUser){
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'UPDATE students SET studentCoach = ? WHERE id = ?',
+      [idCoach, idUser],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+          
+        }
+      }
+    );
+  });
+}
+
+ export {registerStudent, updateStudentSession, getInProgressStudents, updateStudentState, getIdbyUsername, getStudentById, deleteUser, deleteUnpaidStudents, getStudents, getcoachSelected, updateStudentsCoach}

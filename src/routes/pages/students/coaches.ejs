@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  </head>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100svh;
+      font-size: larger;
+    }
+    .selected-card {
+    background-color: #cce5ff; /* Cambia el color de fondo según tus preferencias */
+    }
+    .img-fluid { 
+            
+            max-height: 30vh;
+            width: 100%;
+        }
+    @media (max-width: 767px) {
+        .img-fluid {   
+      width: 15vh;
+      height: 15vh;
+    }
+    .card-body {
+        width: 100%;
+    }
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Ajusta la opacidad según sea necesario */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+.spinner-center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1001; /* Asegura que esté por encima del fondo oscuro */
+}
+#card:hover {
+    cursor: pointer;
+    border: 1px solid #007bff; /* Cambia el borde al color que desees */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade una sombra sutile */
+} 
+    </style>
+</head>
+<body>
+  <main>
+    <div id="loadingOverlay" class="overlay bg-black d-none">   </div>
+    <div id="loadingSpinner" class="spinner-border spinner-center d-none" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/students">
+                <img src="../logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+                Students Area
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/account">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/coaches">Coaches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/Bills">My Bills</a>
+                    </li>
+                    <li class="nav-item">
+                        <form id="logoutForm" action="/logout" method="post" style="display: none;">
+  
+                        </form>
+                        <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+   
+
+    <div class="container mt-4">
+        <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search coaches...">
+        <% for (let i = 0; i < coaches.length; i++) { %>
+            <div id="card" class="card mb-3 <%= coaches[i].id === coachSelected ? 'selected-card' : '' %>" onclick="logCoachId('<%= coaches[i].id %>')">
+              <div class="d-flex">
+                <div class="col-md-4">
+                  <!-- Coach Profile Picture -->
+                  <% if (coaches[i].profilepicture === null || coaches[i].profilepicture === '') { %>
+                    <img src="/nopicture.jpg" alt="No Picture" class="img-fluid mx-auto d-block">
+                  <% } else { %>
+                    <img src="<%= coaches[i].profilepicture %>" alt="User Avatar" class="img-fluid mx-auto d-block">
+                  <% } %>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title"><%= coaches[i].name %> <%= coaches[i].surname %></h5> 
+                  <p class="card-text"> <%= coaches[i].phone %></p>
+                </div>  
+              </div>
+            </div>
+          <% } %>
+          
+    </div>
+  </main>
+
+
+  <script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script>
+  function logout() {
+    // Simula el envío del formulario de logout
+    document.getElementById('logoutForm').submit();
+  }
+  let isFetching = false;
+  function logCoachId(coachId) {
+    if (isFetching) {
+        return; 
+    }
+    isFetching = true;
+        document.getElementById('loadingSpinner').classList.remove('d-none');
+        document.getElementById('loadingSpinner').classList.remove('d-none');
+        console.log('Coach ID:', coachId);
+        fetch('/api/updateUserCoach', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ coachId: coachId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                       // console.log(data);
+                       location.reload();
+                    })
+                    .catch(error => {
+                     console.error('Error updating coach:', error);
+        });
+      }
+
+      document.getElementById('searchInput').addEventListener('input', function () {
+        const searchValue = this.value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+          const cardText = card.innerText.toLowerCase();
+          card.style.display = cardText.includes(searchValue) ? 'block' : 'none';
+        });
+      });
+</script>
+</body>
+</html>

@@ -48,7 +48,7 @@ async function getCoachesElement(element) {
 async function getBillsbyId(id) {
   return new Promise((resolve, reject) => {
     const query = `
-      SELECT bills.*, students.username AS studentUsername
+      SELECT bills.*, students.fullname AS studentUsername
       FROM bills
       INNER JOIN students ON bills.clientId = students.id
       WHERE coachId = ?
@@ -73,7 +73,7 @@ async function getBillsbyId(id) {
 async function getCoachStudents(id) {
   return new Promise((resolve, reject) => {
     const query = `
-      SELECT students.id, students.username
+      SELECT students.id, students.fullname
       FROM students
       WHERE studentCoach = ?
       `;
@@ -82,12 +82,7 @@ async function getCoachStudents(id) {
       if (err) {
         reject(err);
       } else {
-        // Itera sobre cada factura y aplica formatDate a las fechas
-        rows.forEach(bill => {
-          bill.billDate = formatDate(bill.billDate);
-          bill.classDate = formatDate(bill.classDate);
-        });
-
+    
         resolve(rows);
       }
     });
@@ -99,7 +94,7 @@ async function getAllbills() {
   try {
     const bills = await new Promise((resolve, reject) => {
       pool.query(
-        'SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname, students.username ' +
+        'SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname, students.fullname AS username ' +
         'FROM bills ' +
         'INNER JOIN coaches ON bills.coachId = coaches.id ' +
         'INNER JOIN students ON bills.clientId = students.id ' +

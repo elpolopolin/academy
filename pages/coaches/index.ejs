@@ -517,7 +517,7 @@
                   <select class="form-select" id="client" aria-label="Client Select" required>
                     <% for (let i = 0; i < coachStudents.length; i++) { %>
                       <% if (coachStudents[i] && coachStudents[i].id) { %>
-                        <option value="<%= coachStudents[i].id %>"><%= coachStudents[i].username %></option>
+                        <option value="<%= coachStudents[i].id %>"><%= coachStudents[i].fullname %></option>
                       <% } %>
                        
                     <% } %>

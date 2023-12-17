@@ -11,7 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export const createSession = async (req, res) => {
     console.log("esta es la sesion");
-    const idUser = await getIdbyUsername(req.body.username)
+    const idUser = await getIdbyUsername(req.body.email)
     console.log("id del user para stripe", idUser);
     try {
         // Create the session
@@ -21,7 +21,7 @@ export const createSession = async (req, res) => {
                     price_data: {
                         product_data: {
                             name: "Polonsky Tennis Academy",
-                            description: "register student " + "_" + req.body.name,
+                            description: "register student " + " " + req.body.email,
                         },
                         currency: "usd",
                         unit_amount: 25 * 100,

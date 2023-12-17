@@ -37,6 +37,17 @@ async function getBills() {
   });
 }
 
+async function getStudents() {
+  return new Promise((resolve, reject) => {
+    pool.query('SELECT * FROM students', function (err, rows, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
 
   /*
 console.log("coaches ", coaches)
@@ -48,32 +59,34 @@ coaches.forEach(user => {
 
 async function login(req, res) {
   const coaches = await getCoaches();
+  const students = await getStudents();
   const user = req.body.username;
   const password = req.body.password;
 
   if (!user || !password) {
     return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
   }
-  
-  const usuarioAResvisar = coaches.find(coach => coach.username === user);
+
+  let usuarioAResvisar;
+  // Check if the user is a coach
+  usuarioAResvisar = coaches.find(coach => coach.username === user);
+  // If the user is not a coach, check if it's a student
   if (!usuarioAResvisar) {
-    return res.status(400).send({ status: "Error", message: "Error durante login name" });
-    
+    usuarioAResvisar = students.find(student => student.email === user);
   }
-  
-  // console.log("password user a revisar:", usuarioAResvisar.password)
-  // console.log("pasword ingresada ", password);
+
+  if (!usuarioAResvisar) {
+    return res.status(400).send({ status: "Error", message: "Error durante login" });
+  }
 
   const loginCorrecto = await bcryptjs.compare(password, usuarioAResvisar.password);
-  // console.log(loginCorrecto);
 
   if (!loginCorrecto) {
-    // console.log(usuarioAResvisar.password)
-    return res.status(400).send({ status: "Error", message: "Error durante login 2" });
+    return res.status(400).send({ status: "Error", message: "Error durante login" });
   }
 
   const token = jsonwebtoken.sign(
-    { username: usuarioAResvisar.username },
+    { username: usuarioAResvisar.username || usuarioAResvisar.email },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRATION }
   );
@@ -84,9 +97,12 @@ async function login(req, res) {
   };
 
   res.cookie("jwt", token, cookieOption);
-
-  const isAdmin = coaches.find(coach => coach.admin === 1);
-
+  const isStudent = usuarioAResvisar && usuarioAResvisar.paid !== undefined;
+  //console.log("es estudiante? ", isStudent)
+  const isAdmin = usuarioAResvisar.admin === 1; // Assuming both coaches and students may have an 'admin' property
+  if (isStudent) {
+    return res.send({ status: "ok", message: "Usuario loggeado", redirect: "/students" });
+  }
   // Send the success response with the redirect information
   res.send({ status: "ok", message: "Usuario loggeado", redirect: "/" });
 }

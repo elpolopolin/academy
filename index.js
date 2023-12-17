@@ -71,6 +71,7 @@ app.get("/admin",authorization.soloAdmin,(req,res)=> res.sendFile(__dirname + "/
 
 app.get("/bills",authorization.soloAdmin, async function (req,res) {
   const bills = await getAllbills();
+  console.log("las bills", bills)
   res.render(__dirname + "/pages/admin/bills.ejs", {bills});
 });
 app.get("/unpaidbills",authorization.soloAdmin, async function (req,res) {
@@ -84,7 +85,7 @@ app.get("/monthbills",authorization.soloAdmin, async function (req,res) {
   res.render(__dirname + "/pages/admin/monthbills.ejs", {bills, monthIncome});
 });
 
-app.get("/students",authorization.soloAdmin, async function (req,res) {
+app.get("/studentsssss",authorization.soloAdmin, async function (req,res) {
   const bills = await getAllbills();
   console.log(bills)
   res.render(__dirname + "/pages/admin/students.ejs", {bills});
