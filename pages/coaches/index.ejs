@@ -87,6 +87,147 @@
         font-size: 11px;
         color: #ee5535;
       }
+
+      #shareBtn {
+        letter-spacing: 2px;
+        font-weight: 600;
+        box-shadow: none;
+        background-color: #eee;
+        color: #7d2ae8;
+        border: none;
+      }
+
+      .modal {
+        top: 20%;
+      }
+
+      .btn-close {
+        box-shadow: none;
+        border: none;
+        outline: none;
+      }
+
+      .modal-body .icons {
+        margin: 15px 0px 20px 0px;
+      }
+
+      .modal-body .icons a {
+        text-decoration: none;
+        border: 1px solid transparent;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 20px;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .modal-body .icons a:nth-child(1) {
+        color: #1877f2;
+        border-color: #b7d4fb;
+      }
+
+      .modal-body .icons a:nth-child(1):hover {
+        background-color: #1877f2;
+        color: #fff;
+      }
+
+      .modal-body .icons a:nth-child(2) {
+        color: #46c1f6;
+        border-color: #b6e7fc;
+      }
+
+      .modal-body .icons a:nth-child(2):hover {
+        background-color: #46c1f6;
+        color: #fff;
+      }
+
+      .modal-body .icons a:nth-child(3) {
+        color: #e1306c;
+        border-color: #f5bccf;
+      }
+
+      .modal-body .icons a:nth-child(3):hover {
+        background-color: #e1306c;
+        color: #fff;
+      }
+
+      .modal-body .icons a:nth-child(4) {
+        color: #25d366;
+        border-color: #bef4d2;
+      }
+
+      .modal-body .icons a:nth-child(4):hover {
+        background-color: #25d366;
+        color: #fff;
+      }
+
+      .modal-body .icons a:nth-child(5) {
+        color: #0088cc;
+        border-color: #b3e6ff;
+      }
+
+      .modal-body .icons a:nth-child(5):hover {
+        background-color: #0088cc;
+        color: #fff;
+      }
+
+      .modal-body .icons a:hover {
+        border-color: transparent;
+      }
+
+      .modal-body .icons a span {
+        transition: all 0.09s ease-in-out;
+      }
+
+      .modal-body .icons a:hover span {
+        transform: scaleX(1.1);
+      }
+
+      .modal-body .field {
+        margin: 15px 0px -5px 0px;
+        height: 45px;
+        border: 1px solid #dfdfdf;
+        border-radius: 5px;
+        padding: 0 5px;
+      }
+
+      .modal-body .field.active {
+        border-color: #7d2ae8;
+      }
+
+      .field span {
+        width: 50px;
+        font-size: 1.1rem;
+      }
+
+      .field.active span {
+        color: #7d2ae8;
+      }
+
+      .field input {
+        border: none;
+        outline: none;
+        font-size: 0.89rem;
+        width: 100%;
+        height: 100%;
+      }
+
+      .field button {
+        padding: 5px 16px;
+        color: #fff;
+        background: #7d2ae8;
+        border: 2px solid transparent;
+        border-radius: 5px;
+        font-weight: 500;
+      }
+
+      @media (max-width: 330px) {
+        .modal-body .icons a {
+          margin-right: 15px;
+          width: 35px;
+          height: 35px;
+        }
+      }
     </style>
   </head>
   <body id="body">
@@ -168,7 +309,7 @@
                     <h6 class="card-subtitle text-muted">
                       Client: <%= coachBills[i].studentUsername %>
                     </h6>
-                    <p class="card-text p-y-1" style="font-size: 75%;">
+                    <p class="card-text p-y-1" style="font-size: 75%">
                       <%= coachBills[i].length %>hr <%= coachBills[i].type %>
                     </p>
                     <b class="card-text p-y-1" style="display: block; text-align: end">
@@ -176,9 +317,17 @@
                     </b>
         
                     <% if (coachBills[i].paid === 1) { %>
-                      <b class="text-success fw-bold" style="display: block; text-align: end">PAID</b>
+                    <b
+                      class="text-success fw-bold"
+                      style="display: block; text-align: end"
+                      >PAID</b
+                    >
                     <% } else { %>
-                      <b class="text-danger fw-bold" style="display: block; text-align: end">NOT PAID</b>
+                    <b
+                      class="text-danger fw-bold"
+                      style="display: block; text-align: end"
+                      >NOT PAID</b
+                    >
                     <% } %>
         
                     <button
@@ -191,6 +340,7 @@
                   </div>
                 </div>
               </div>
+
               <div
                 class="modal fade"
                 id="myModal"
@@ -198,13 +348,13 @@
                 role="dialog"
                 aria-labelledby="myModalLabel"
                 aria-hidden="true"
+                style="margin-top: 10%"
               >
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="myModalLabel">Send Bill</h5>
-
-                      <button
+                      <h5 class="modal-title" id="modal-billid">Send Bill</h5>
+                      <p
                         type="button"
                         class="close"
                         data-dismiss="modal"
@@ -212,25 +362,46 @@
                         onclick="closeModal()"
                       >
                         <span aria-hidden="true">&times;</span>
-                      </button>
+                      </p>
                     </div>
-
                     <div class="modal-body">
-                      <p id="modal-billid">Bill ID:</p>
-                    </div>
-
-                    <div class="modal-footer">
-                      <a href="http://localhost:4000/viewbill/" id="viewLink"
-                        >View Bill Online</a
+                      <p>Share this link via</p>
+                      <div class="d-flex align-items-center icons">
+                        <a
+                          href="#"
+                          class="fs-5 d-flex align-items-center justify-content-center"
+                          id="wpp"
+                        >
+                          <span class="fa fa-whatsapp"></span>
+                        </a>
+                        <a
+                          href="#"
+                          class="fs-5 d-flex align-items-center justify-content-center"
+                          id="mail"
+                        >
+                          <span class="fa fa-share"></span>
+                        </a>
+                      </div>
+                      <p>Or copy link</p>
+                      <div
+                        class="d-flex align-items-center justify-content-between"
                       >
-
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        id="copyLink"
-                      >
-                        Copy
-                      </button>
+                        <span class="fas fa-link text-center"></span>
+                        <input
+                          type="text"
+                          value="some.com/share"
+                          href="http://localhost:4000/viewbill/"
+                          id="modal-link"
+                          style="flex: 0.9; font-size: 90%"
+                        />
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          id="copyLink"
+                        >
+                          Copy
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -298,13 +469,19 @@
         }
       }
       function showModal(id) {
-        document.getElementById("modal-billid").textContent = "Bill Id:" + id;
-        document.getElementById("viewLink").href =
+        document.getElementById("modal-billid").textContent = "Bill Id: " + id;
+        document.getElementById("modal-link").href =
           "http://localhost:4000/viewbill/";
-        document.getElementById("viewLink").href += id;
-        document.getElementById("copyLink").onclick = copyToClipboard(
-          document.getElementById("viewLink").href
-        );
+        document.getElementById("modal-link").href += id;
+        document.getElementById("copyLink").onclick = () =>
+          copyToClipboard(document.getElementById("modal-link").href);
+        document.getElementById("modal-link").value =
+          document.getElementById("modal-link").href;
+        document.getElementById("mail").href =
+          "mailto:?subject=Link to pay your bill&body=You can pay your Polonsky Tennis Academy bill here: " + document.getElementById("modal-link").href;
+        document.getElementById("wpp").href =
+          "https://wa.me/?text=You can pay your Polonsky Tennis Academy bill here: " +
+          document.getElementById("modal-link").href;
 
         // Muestra el modal
         $("#myModal").modal("show");
