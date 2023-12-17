@@ -7,6 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <style>
     body {
+      background-color: #6495ed;
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100svh;
@@ -27,6 +28,8 @@
         <div class="card-body">
             <b>Full name</b>
             <input type="text" class="form-control" id="fullName" name="fullName" required></input>
+            <b>Username</b>
+            <input type="text" class="form-control" id="username" name="username" required></input>
             <b>Password</b>
             <input  type="password" class="form-control " id="repeatPassword" name="repeatPassword" required></input>
             <b>Repeat password</b>
@@ -41,8 +44,8 @@
             <input type="text" class="form-control" id="address" name="address" required></input>
             <b>Club</b>
             <select class="form-select form-control" id="typeSelect" aria-label="Type Select" required>
-              <option value="1">Club 1</option>
-              <option value="2">Club 2</option>            
+              <option value="0">Club 1</option>
+              <option value="1">Club 2</option>            
             </select>
         </div>
         <div class="card-footer">
@@ -68,6 +71,8 @@
     const mensajeError = document.getElementsByClassName("error")[0];
     document.getElementById("clientForm").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const clubSelect = document.getElementById("typeSelect");
+    const selectedClub = clubSelect.options[clubSelect.selectedIndex].value;
 
     const password = document.getElementById("password").value;
     const repeatPassword = document.getElementById("repeatPassword").value;
@@ -82,21 +87,20 @@
     const formData = new FormData(e.target);
         console.log(formData)
 
- 
-
     const res = await fetch("http://localhost:4000/api/registerStudent", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
         },
       body: JSON.stringify({
+        username: formData.get("username"),
         name: formData.get("fullName"),
         guardiansname: formData.get("guardiansName"),
         email: formData.get("email") || "null",
         phone: formData.get("phone") || "null",
         password:  formData.get("password"),
         address: formData.get("address") || "null",
-        club: formData.get("typeSelect") || "null",
+        club: selectedClub  || "null",
 
         })
     });
@@ -110,9 +114,31 @@
 
     const resJson = await res.json();
     if (resJson.redirect) {
-      //window.location.href = resJson.redirect;
-      location.reload();
-    }
+      
+     // location.reload();
+     const res2 = await fetch("/create-checkout-session-student", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: formData.get("username"),
+            name: formData.get("fullName"),
+            guardiansname: formData.get("guardiansName"),
+            email: formData.get("email") || "null",
+            phone: formData.get("phone") || "null",
+            password:  formData.get("password"),
+            address: formData.get("address") || "null",
+            club: selectedClub  || "null",
+          }),
+        });
+        const data = await res2.json();
+        console.log(data);
+
+        window.location.href = data.url;
+      }
+
+    
   });
 
     

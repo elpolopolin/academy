@@ -1,6 +1,7 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent, getCoachStudents  } from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents  } from "./helpers/db.js";
+import { registerStudent, deleteUnpaidStudents } from "./helpers/studentDb.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
 //Fix para __direname
@@ -11,11 +12,12 @@ import {methods as authentication} from "./controllers/authentication.controller
 import {methods as authorization} from "./middlewares/authorization.js";
 //import { upload } from "./helpers/uploadMulter.js";
 import multer from 'multer';
-
+import cron from "node-cron"; //automatizacion de request a la bd todos los dias a las 3am por ejemplo
 //Payment routes
 import paymentRoutes from './src/routes/payment.routes.js'
 //students routes
 import studentsRoutes from './src/routes/students.routes.js'
+
 
 //Server
 const app = express();
@@ -28,6 +30,9 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(cookieParser())
 
+cron.schedule('9 3 * * *', () => {
+  deleteUnpaidStudents();
+});
 
 //Rutas
 app.get("/",authorization.soloPublico, (req,res)=> res.sendFile(__dirname + "/pages/login.html"));
@@ -127,7 +132,7 @@ app.get("/Account", authorization.soloCoaches, async function (req, res) {
   }
 });
 app.post('/api/updatecoach', (req, res) => UpdateCoach(req, res));
-app.post('/api/registerStudent',authorization.soloCoaches, (req, res) => registerStudent(req, res));
+app.post('/api/registerStudent', (req, res) => registerStudent(req, res));
 
 //payment
 app.use(paymentRoutes);

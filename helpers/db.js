@@ -529,10 +529,11 @@ async function registerStudent(req, res) {
    const fullname = req.body.name;
    const guardiansname = req.body.guardiansname;
    const username = fullname.replace(/\s+/g, '');
-   const password = "student";
+   const password = req.body.password;;
    const phonenumber = req.body.phone;
    const mail = req.body.email;
    
+   console.log("register student", username)
    if (!username || !password ) {
      return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
    }
@@ -571,4 +572,4 @@ async function registerStudent(req, res) {
 
 //
 
-export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent, getCoachStudents };
+export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents };
