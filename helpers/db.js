@@ -47,10 +47,47 @@ async function getCoachesElement(element) {
 
 async function getBillsbyId(id) {
   return new Promise((resolve, reject) => {
-    pool.query('SELECT * FROM bills WHERE coachId = ?', [id], function (err, rows, fields) {
+    const query = `
+      SELECT bills.*, students.username AS studentUsername
+      FROM bills
+      INNER JOIN students ON bills.clientId = students.id
+      WHERE coachId = ?
+      ORDER BY bills.classDate DESC`;
+
+    pool.query(query, [id], function (err, rows, fields) {
       if (err) {
         reject(err);
       } else {
+        // Itera sobre cada factura y aplica formatDate a las fechas
+        rows.forEach(bill => {
+          bill.billDate = formatDate(bill.billDate);
+          bill.classDate = formatDate(bill.classDate);
+        });
+
+        resolve(rows);
+      }
+    });
+  });
+}
+
+async function getCoachStudents(id) {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT students.id, students.username
+      FROM students
+      WHERE studentCoach = ?
+      `;
+
+    pool.query(query, [id], function (err, rows, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        // Itera sobre cada factura y aplica formatDate a las fechas
+        rows.forEach(bill => {
+          bill.billDate = formatDate(bill.billDate);
+          bill.classDate = formatDate(bill.classDate);
+        });
+
         resolve(rows);
       }
     });
@@ -96,6 +133,33 @@ async function getunpaidBills() {
         'FROM bills ' +
         'INNER JOIN coaches ON bills.coachId = coaches.id ' +
         'WHERE bills.paid = 0 ' +  // Agrega esta línea para filtrar solo facturas no pagadas
+        'ORDER BY bills.billDate DESC', function (err, rows, fields) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+    });
+    // Iterar sobre cada factura y obtener el nombre del entrenador
+    for (const bill of bills) {
+      bill.billDate = formatDate(bill.billDate);
+      bill.classDate = formatDate(bill.classDate);
+    }
+
+    return bills;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getInProgressBills() {
+  try {
+    const bills = await new Promise((resolve, reject) => {
+      pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
+        'FROM bills ' +
+        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
+        'WHERE bills.paid = 0 AND bills.sessionId IS NOT NULL ' +  // Agrega esta línea para filtrar solo facturas no pagadas
         'ORDER BY bills.billDate DESC', function (err, rows, fields) {
           if (err) {
             reject(err);
@@ -507,4 +571,4 @@ async function registerStudent(req, res) {
 
 //
 
-export { getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent };
+export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent, getCoachStudents };

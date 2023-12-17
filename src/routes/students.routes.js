@@ -3,12 +3,17 @@ import express from "express";
 import { createSession } from "../../controllers/payment.controller.js";
 import { getAllbills, updateBillState, getInProgressBills, getBillById } from "../../helpers/db.js";
 import Stripe from "stripe";
+import {methods as authorization} from "../../middlewares/authorization.js";
+import path from 'path';
+import {fileURLToPath} from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const router = Router()
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
+router.get("/register-student",authorization.soloPublico, (req,res)=> res.render(__dirname + "/pages/registerStudent.ejs"));
 router.post('/create-checkout-session', createSession)
 router.get('/success/:id', async (req, res) => {
 

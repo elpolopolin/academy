@@ -1,6 +1,6 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent,  } from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, registerStudent, getCoachStudents  } from "./helpers/db.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
 //Fix para __direname
@@ -12,8 +12,10 @@ import {methods as authorization} from "./middlewares/authorization.js";
 //import { upload } from "./helpers/uploadMulter.js";
 import multer from 'multer';
 
-//Payment
+//Payment routes
 import paymentRoutes from './src/routes/payment.routes.js'
+//students routes
+import studentsRoutes from './src/routes/students.routes.js'
 
 //Server
 const app = express();
@@ -97,8 +99,9 @@ app.get("/mybills",authorization.soloCoaches, async function(req,res) {
   const coaches = await getCoaches();
   const coachId = revisarCookie(req, coaches, "id");
   const coachBills = await getBillsbyId(coachId);
+  const coachStudents = await getCoachStudents(coachId);
   console.log(coachBills)
-  res.render(__dirname + "/pages/coaches/index.ejs", { coachBills });
+  res.render(__dirname + "/pages/coaches/index.ejs", { coachBills, coachStudents });
 });
 
 app.get("/mystudents",authorization.soloCoaches, async function(req,res) {
@@ -127,7 +130,8 @@ app.post('/api/updatecoach', (req, res) => UpdateCoach(req, res));
 app.post('/api/registerStudent',authorization.soloCoaches, (req, res) => registerStudent(req, res));
 
 //payment
-app.use(paymentRoutes)
+app.use(paymentRoutes);
+app.use(studentsRoutes);
 
 //upload coach image
 const multerMiddleware = multer({
