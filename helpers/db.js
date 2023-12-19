@@ -691,8 +691,24 @@ async function registerStudent(req, res) {
    });
   
  }
+ function getCoachClasses(coachId) {
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'SELECT * FROM groupClasses WHERE coachId = ?',
+      [coachId],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
 
 //
 
-export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, 
+export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, getCoachClasses,
   CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent };

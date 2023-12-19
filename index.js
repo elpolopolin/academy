@@ -1,6 +1,6 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent  } from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent, getCoachClasses  } from "./helpers/db.js";
 import { registerStudent, deleteUnpaidStudents, getStudents } from "./helpers/studentDb.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
@@ -119,12 +119,14 @@ app.get("/mybills",authorization.soloCoaches, async function(req,res) {
   res.render(__dirname + "/pages/coaches/index.ejs", { coachBills, coachStudents });
 });
 
-app.get("/mystudents",authorization.soloCoaches, async function(req,res) {
-  res.render(__dirname + "/pages/coaches/mystudents.ejs");
+app.get("/group-classes",authorization.soloCoaches, async function(req,res) {
+  const coaches = await getCoaches();
+  const coachId = revisarCookie(req, coaches, "id");
+  const coachClasses = await getCoachClasses(coachId);
+  console.log(coachClasses);
+  res.render(__dirname + "/pages/coaches/groupclasses.ejs", { coachClasses });
 });
-app.get("/registerStudent",authorization.soloCoaches, async function(req,res) {
-  res.render(__dirname + "/pages/coaches/registerStudent.ejs");
-});
+
 
 app.post("/api/newbill",authorization.soloCoaches, (req, res) => CreateBilll(req, res));
 
@@ -142,7 +144,7 @@ app.get("/Account", authorization.soloCoaches, async function (req, res) {
   }
 });
 app.post('/api/updatecoach', (req, res) => UpdateCoach(req, res));
-app.post('/api/registerStudent', (req, res) => registerStudent(req, res));
+
 
 //payment
 app.use(paymentRoutes);
