@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<!-- Data Table CSS -->
+<link rel='stylesheet' href='https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css'>
+<!-- Font Awesome CSS -->
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css'>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100svh;
+      font-size: larger;
+    }
+    </style>
+</head>
+<body>
+  <main>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="/students">
+              <img src="../logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+              Students Area
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                  <li class="nav-item">
+                      <a class="nav-link" href="/students/account">Account</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/students/coaches">coaches</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/students/mybills">My Bills</a>
+                  </li>
+                  <li class="nav-item">
+                      <form id="logoutForm" action="/logout" method="post" style="display: none;">
+
+                      </form>
+                      <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </nav>
+
+   
+
+  <div class="account mt-4">
+    <div class="container">
+        <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="account-settings">
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            
+                            <% if (student.profilepicture === null || student.profilepicture === '') { %>
+                                <img src="/nopicture.jpg" alt="No Picture" class="img-fluid mx-auto d-block" style="max-height: 30vh;  width: 100%;">
+                            <% } else { %>
+                                <img src="<%= student.profilepicture %>" alt="User Avatar" class="img-fluid mx-auto d-block" style="max-height: 30vh; width: 100%;">
+                            <% } %>
+                        </div>
+                        <h5 class="user-name mt-2"><%= student.name %> <%= student.surname %></h5>
+                        <h6 class="text-decoration-underline"><%= student.mail %></h6>
+                    </div>
+                    <div class="about">
+                        <h5>About:</h5>
+                        <p>Address: <%= student.address %></p>
+                        <p>Club: <%= student.club %></p>
+                        <p>birthdate: <%= student.birthdate %></p>
+                    </div>
+                </div>
+            </div>  
+        </div>
+        </div>
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+        <div class="card h-100">
+            <div class="card-body">
+                <form id="updateForm" >
+                <div class="row gutters">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <h6 class="mb-2 text-primary">Personal Details</h6>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="fullName">Guardian's name</label>
+                            <input type="text" class="form-control" id="Guardiansname"  placeholder=<%= student.guardiansname %>>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="eMail">Email</label>
+                            <input type="email" class="form-control" id="eMail" placeholder=<%= student.email %>>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" id="phone" placeholder=<%= student.phone %>>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="website">address</label>
+                            <input type="text" class="form-control" id="address" placeholder=<%= student.address %>> 
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="website">Birthdate</label>
+                            <input type="date" class="form-control" id="Birthdate" > 
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="website">Club</label>
+                            <select class="form-select form-control" id="typeSelect" aria-label="Type Select" required>
+                                <option class="disabled" value="Private Class">Select your club</option>
+                                <option value="0">club 1</option>
+                                <option value="1">club 2</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="row gutters mt-2">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="mt-2 text-right">
+                            <button type="button" id="submit" name="submit" class="btn btn-primary" onclick="updateData()">Update</button>
+                            <button type="button" class="btn btn-warning ms-2" onclick="modalFile()">
+                                <i class="fa-solid fa-image"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                   
+            </div>
+          
+        </form>
+      
+        </div>
+        </div>
+        </div>
+        </div>
+       
+</div>
+
+
+</main>
+<script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script>
+
+function logout() {
+// Simula el envío del formulario de logout
+document.getElementById('logoutForm').submit();
+}
+
+function updateData() {
+    const inputGuardiansName = document.getElementById('Guardiansname');
+    const inputEmail = document.getElementById('eMail');
+    const inputPhone = document.getElementById('phone');
+    const inputAddress = document.getElementById('address');
+    const inputBirthdate = document.getElementById('Birthdate'); 
+    const inputClub = document.getElementById('typeSelect'); 
+
+    const birthdateNorm = '<%= student.birthdate %>';
+    const birthdateFormat = formatarFecha(birthdateNorm);
+   // console.log(birthdateFormat);
+
+    const currentStudent = {
+        guardiansname: '<%= student.guardiansname %>',
+        email: '<%= student.email %>',
+        phone: '<%= student.phone %>',
+        address: '<%= student.address %>',
+        birthdate: '<%= student.birthdate %>',
+        club: '<%= student.club %>',
+    };
+    console.log("current student adress", currentStudent.birthdate)
+    console.log("input brithdat", inputBirthdate.value)
+    const birth = inputBirthdate.value.trim() === '0000-00-00' ? currentStudent.birthdate : inputBirthdate.value;
+    const valoresUpdate = {
+        guardiansname: inputGuardiansName.value || currentStudent.guardiansname || null,
+        email: inputEmail.value || currentStudent.email || "null@null.com",
+        phone: inputPhone.value || currentStudent.phone || null,
+        address: inputAddress.value || currentStudent.address || null,
+        birthdate: birth,
+        club: inputClub.value || currentStudent.club || null,
+    };
+
+    fetch('/api/updatestudent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(valoresUpdate)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error updating student:', error);
+    });
+}
+
+function formatarFecha(fecha) {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const dateObject = new Date(fecha);
+  const formattedDate = dateObject.toLocaleDateString('en-US', options);
+  return formattedDate;
+}
+function modalFile() {
+    // Crear el contenido del modal
+    const modalContent = document.createElement('div');
+modalContent.innerHTML = `
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div id="errorContainer"></div> 
+    <div class="modal-dialog justify-content-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Upload profile picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="uploadImage(event)" class="needs-validation" id="uploadform" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="file" class="form-control-file" id="imagenstudent" name="imagenstudent" accept="image/png, image/jpeg">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+// Añadir el modal al cuerpo del documento
+document.body.appendChild(modalContent);
+// Mostrar el modal
+const editModal = new bootstrap.Modal(document.getElementById(`editModal`));
+editModal.show();
+}
+
+function uploadImage(event) {
+event.preventDefault();
+//console.log("estoy en upload");
+// Obtener el formulario y los datos del archivo
+const form = document.getElementById('uploadform');
+const fileInput = form.querySelector('#imagenstudent');
+//console.log(fileInput);
+// console.log(form);
+
+if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+console.error('No se ha seleccionado ningún archivo.');
+return;
+}
+const formData = new FormData();
+
+// Agregar datos del formulario al FormData
+formData.append('imagenstudent', fileInput.files[0]);
+
+fetch('/api/uploadimagestudent', {
+method: 'POST',
+body: formData,
+})
+.then(response => response.json())
+.then(data => {
+// console.log(data);
+location.reload();
+})
+.catch(error => {
+console.error('Error uploading image:', error);
+});
+
+}
+</script>
+
+</body>
+</html>

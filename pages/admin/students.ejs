@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+         crossorigin="anonymous">
+        
+        <style>
+          body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100svh;
+            font-size: larger;
+          }
+          </style>
+</head>
+
+<body>
+    <main>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+                    Admin Area
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ver-coaches">coaches </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/allstudents">Students</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Bills">Bills</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register students</a>
+                        </li>
+                        <li class="nav-item">
+                            <form id="logoutForm" action="/logout" method="post" style="display: none;">
+
+                            </form>
+                            <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+       
+       
+        <div class="container mt-4">
+            <div class="p-2 shadow-lg ">
+            <div class="table-responsive ">
+                <table id="example" class="table table-striped  table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>email</th>
+                            <th>FullName</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>Club</th>
+                            <th>Coach</th>
+                            <th>Inscription</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% students.forEach(student => { %>
+                            <tr class="<%= student.scholarship === 1 ? 'becado' : '' %>">
+                              <td>
+                                <button onclick="deletestudent('<%= student.id %>')" class="btn btn-danger">
+                                  <i class="fas fa-trash-alt"></i> 
+                                </button>
+                                <% if (student.scholarship === 1) { %>
+                                    <button onclick="sacarbeca('<%= student.id %>')" class="btn btn-danger" title="Remove Scholarship">
+                                      <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                  <% } else { %>
+                                    <button onclick="becar('<%= student.id %>')" class="btn btn-warning" title="Add Scholarship">
+                                      <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                  <% } %>
+                              </td>
+                              <td id="email<%= student.id %>"><%= student.email %></td>
+                              <td id='fullname<%= student.id %>'><%= student.fullname %></td>
+                              <td id="address<%= student.id %>"><%= student.address %></td>
+                              <td id="phone<%= student.id %>"><%= student.phone || 'N/A' %></td>     
+                              <td id="club<%= student.id %>"><%= student.club || 'N/A' %></td>
+                              <td id="coach<%= student.id %>"><%= student.username || 'N/A' %></td>
+                              <% if (student.paid === 1) { %>
+                                <td><i class="fa-solid fa-check"></i></td>
+                              <% } else { %>
+                                <td><i class="fa-solid fa-xmark"></i></td>
+                              <% } %>
+                            </tr>
+                          <% }); %>
+                    </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
+
+        function logout() {
+            // Simula el envío del formulario de logout
+            document.getElementById('logoutForm').submit();
+        }
+
+      
+
+          
+
+    function deletestudent(studentId) {
+  
+    const confirmDelete = confirm('Are you sure you want to delete this students?');
+
+    if (confirmDelete) {
+        fetch('/api/deletestudent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: studentId })
+        })
+        .then(response => response.json())
+        .then(data => {
+           // console.log(data);
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error updating students:', error);
+        });
+    } else {
+       
+      //  console.log('Delete canceled');
+    }
+}
+    function becar (studentId) { 
+        const confirmDelete = confirm('Are you sure you want to grant this user a scholarship? This will give the student the opportunity to skip the academy invoices.');
+
+    if (confirmDelete) {
+        fetch('/api/becarstudent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: studentId })
+        })
+        .then(response => response.json())
+        .then(data => {
+        // console.log(data);
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error updating students:', error);
+        });
+    } else {
+    
+    //  console.log('Delete canceled');
+        }
+            }
+            function sacarbeca (studentId) { 
+        const confirmDelete = confirm('Are you sure you want to remove this students scholarship?');
+
+    if (confirmDelete) {
+        fetch('/api/sacarbeca', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: studentId })
+        })
+        .then(response => response.json())
+        .then(data => {
+        // console.log(data);
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error updating students:', error);
+        });
+    } else {
+    
+    //  console.log('Delete canceled');
+        }
+            }
+        
+
+    </script>
+</body>
+
+</html>

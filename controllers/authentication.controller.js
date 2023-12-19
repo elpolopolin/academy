@@ -10,7 +10,7 @@ const pool = mysql.createPool({
   host: 'sql5.freemysqlhosting.net',
   user: process.env.SQL_USER || '',
   password: process.env.SQL_PASSWORD || '',
-  database: 'sql5669660'
+  database: 'sql5671391'
 });
 
 async function getCoaches() {

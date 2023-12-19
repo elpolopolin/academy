@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students</title>
+  <link rel="stylesheet" href="styles/adminStyle.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<!-- Data Table CSS -->
+<link rel='stylesheet' href='https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css'>
+<!-- Font Awesome CSS -->
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css'>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100svh;
+      font-size: larger;
+    }
+    .card {
+    cursor: pointer; 
+    transition: transform 0.2s; 
+  }
+
+  .card:hover {
+    transform: scale(1.03);
+  }
+    </style>
+</head>
+<body>
+  <main>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="/students">
+              <img src="../logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+              Students Area
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                  <li class="nav-item">
+                      <a class="nav-link" href="/students/account">Account</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/students/coaches">Coaches</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/students/mybills">My Bills</a>
+                  </li>
+                  <li class="nav-item">
+                      <form id="logoutForm" action="/logout" method="post" style="display: none;">
+
+                      </form>
+                      <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </nav>
+
+   
+
+    <div class="container mt-4 ">
+      <h1 class="titulo p-2 shadow-lg fw-bold ">Bills:</h1>
+      <div class="">
+        <button class="btn shadow-lg fw-bold" onclick="filterBills('all')">All Bills</button>
+        <button class="btn shadow-lg fw-bold" onclick="filterBills('paid')">Paid Bills</button>
+        <button class="btn shadow-lg fw-bold" onclick="filterBills('unpaid')">Unpaid Bills</button>
+      </div>
+        
+      <div class="row hidden-md-up">
+        <% for (let i = 0; i < bills.length; i++) { %>
+        <div class="col-md-4" style="margin-top: 5%">
+          <div class="card p-4"   onclick="viewBill('<%= bills[i].id %>')" >
+            <div class="d-flex justify-content-between">
+              <h4 class="card-title">Bill Id: <%= bills[i].id %></h4>
+              <p class="text-end"><%= bills[i].classDate %></p>
+            </div>
+            <div class="card-block">
+              <h6 class="card-subtitle text-muted">
+                coach: <%= bills[i].coachName %>  <%= bills[i].coachSurname %> 
+              </h6>
+              <p class="card-text p-y-1" style="font-size: 75%">
+                <%= bills[i].length %>hr <%= bills[i].type %>
+              </p>
+              <b class="card-text p-y-1" style="display: block; text-align: end">
+                $<%= bills[i].price %>
+              </b>
+  
+              <% if (bills[i].paid === 1) { %>
+              <b
+                class="text-success fw-bold"
+                style="display: block; text-align: end"
+                >PAID</b
+              >
+              <% } else { %>
+              <b
+                class="text-danger fw-bold"
+                style="display: block; text-align: end"
+                >NOT PAID</b
+              >
+              <% } %>
+  
+             
+            </div>
+          </div>
+        </div>
+
+
+        <% } %>
+      </div>
+        
+    </div>
+  </main>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script>
+  function logout() {
+    // Simula el envío del formulario de logout
+    document.getElementById('logoutForm').submit();
+  }
+  function viewBill(billId) {
+  var billUrl = '/viewbill/' + billId;
+  window.location.href = billUrl;
+}
+function filterBills(filterType) {
+    var allBills = document.querySelectorAll('.hidden-md-up .col-md-4');
+
+    allBills.forEach(function (bill) {
+      var isPaid = bill.querySelector('.text-success') !== null;
+      var isUnpaid = bill.querySelector('.text-danger') !== null;
+
+      if (
+        (filterType === 'all') ||
+        (filterType === 'paid' && isPaid) ||
+        (filterType === 'unpaid' && isUnpaid)
+      ) {
+        bill.style.display = 'block';
+      } else {
+        bill.style.display = 'none';
+      }
+    });
+  }
+
+</script>
+</body>
+</html>

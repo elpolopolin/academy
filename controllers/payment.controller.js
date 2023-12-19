@@ -32,7 +32,7 @@ export const createSession = async (req, res) => {
               },
         });
 
-        console.log(session)
+
         await updateBillSession(req.body.billId, session.id)
         res.json(session);
     } catch (error) {

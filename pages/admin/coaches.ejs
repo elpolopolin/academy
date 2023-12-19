@@ -38,7 +38,7 @@
                             <a class="nav-link" href="/ver-coaches">Coaches</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/students">Students</a>
+                            <a class="nav-link" href="/allstudents">Students</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/Bills">Bills</a>
@@ -82,8 +82,8 @@
                                 <button onclick="deleteCoach('<%= coach.id %>')" class="btn ">
                                     <i class="fas fa-trash-alt"></i> 
                                 </button>
-                                <button class="btn btn-">
-                                <i class="fa-solid fa-list-ul"></i>
+                                <button class="btn btn-" onclick="viewInvoices('<%= coach.id %>')">
+                               <i class="fa-solid fa-file-invoice-dollar"></i>
                             </button>
                             </td>
                             
@@ -114,6 +114,10 @@
             $('#example').DataTable();
         });
 
+        function viewInvoices(coachId) {
+    const targetUrl = `/coachInvoices/${coachId}`;
+    window.location.href = targetUrl;
+        }
         function logout() {
             // Simula el envío del formulario de logout
             document.getElementById('logoutForm').submit();

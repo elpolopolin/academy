@@ -13,12 +13,12 @@ const pool = mysql.createPool({
   host: 'sql5.freemysqlhosting.net',
   user: process.env.SQL_USER || '',
   password: process.env.SQL_PASSWORD || '',
-  database: 'sql5669660'
+  database: 'sql5671391'
 });
 
 async function getStudents() {
   return new Promise((resolve, reject) => {
-    pool.query('SELECT * FROM students', function (err, rows, fields) {
+    pool.query('SELECT students.*, coaches.username FROM students LEFT JOIN coaches ON students.studentCoach = coaches.id', function (err, rows, fields) {
       if (err) {
         reject(err);
       } else {
@@ -26,6 +26,45 @@ async function getStudents() {
       }
     });
   });
+}
+async function getBillById(id) {
+  try {
+    const bills = await new Promise((resolve, reject) => {
+      pool.query(
+        'SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
+        'FROM bills ' +
+        'LEFT JOIN coaches ON bills.coachId = coaches.id ' +
+        'WHERE bills.clientId = ? ' +  
+        'ORDER BY bills.billDate DESC',
+        [id], 
+        function (err, rows, fields) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        }
+      );
+    });
+
+    for (const bill of bills) {
+      bill.billDate = formatDate(bill.billDate);
+      bill.classDate = formatDate(bill.classDate);
+    }
+
+    return bills;
+  } catch (error) {
+    throw error;
+  }
+}
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Los meses van de 0 a 11, así que se suma 1
+  const year = date.getFullYear();
+
+  // Formatea la fecha como xx/xx/xxxx
+  return `${year}-${month}-${day}`;
 }
 
 async function deleteUnpaidStudents() {
@@ -88,7 +127,7 @@ async function registerStudent(req, res) {
  function updateStudentSession(idUser, sessionId) {
   return new Promise((resolve, reject) => {
     pool.query(
-      'UPDATE students SET sessionid=? WHERE id = ?',
+      'UPDATE students SET sessionId=? WHERE id = ?',
       [sessionId, idUser],
       function (err, result) {
         if (err) {
@@ -271,4 +310,67 @@ async function updateStudentsCoachDB(idCoach, idUser){
   });
 }
 
- export {registerStudent, updateStudentSession, getInProgressStudents, updateStudentState, getIdbyUsername, getStudentById, deleteUser, deleteUnpaidStudents, getStudents, getcoachSelected, updateStudentsCoach}
+async function updateStudent(req, res) {
+  const students = await getStudents();
+
+  // Sacar el id del estudiante logeado
+  const studentId = revisarCookie2(req, students, "id");
+  //console.log("Este es el ID del estudiante en la función updateStudent:", studentId);
+  const data = req;
+  try {
+    const result = await updateStudentInDatabase(studentId, data);
+    res.json({ success: true, message: 'Student updated successfully', result });
+  } catch (error) {
+    console.error('Error updating student:', error);
+    res.status(500).json({ success: false, message: 'Error updating student' });
+  }
+}
+
+function updateStudentInDatabase(studentId, data) {
+  const valoresUpdate = data.body;
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'UPDATE students SET guardiansname = ?, email = ?, phone = ?, address = ?, birthdate = ?, club = ? WHERE id = ?',
+      [
+        valoresUpdate.guardiansname,
+        valoresUpdate.email,
+        valoresUpdate.phone,
+        valoresUpdate.address,
+        valoresUpdate.birthdate,
+        valoresUpdate.club,
+        studentId
+      ],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+const host = "http://localhost:4000";
+async function updateStudentImage(req, res) {
+  try {
+
+   // console.log('Req.File:', req.file);
+    const extname = req.file ? path.extname(req.file.filename) : '';
+    const imagenRuta = req.file ? `${host}/imagenesStudents/${req.file.filename}` : '';
+   // console.log('Imagen Ruta:', imagenRuta);
+    const students = await getStudents();
+    const studentId = revisarCookie2(req, students, "id");
+    const result = await pool.query(
+      'UPDATE students SET profilepicture = ? WHERE id = ?',
+      [imagenRuta ,studentId]
+    );
+   // console.log('Update Result:', result);
+    res.json({ success: true, message: 'Image updated successfully' });
+  } catch (error) {
+    console.error('Error updating image:', error);
+    res.status(500).json({ success: false, message: 'Error updating image' });
+  }
+}
+
+ export {registerStudent, updateStudentSession, getInProgressStudents, updateStudentState, getIdbyUsername, getStudentById, deleteUser,
+   deleteUnpaidStudents, getStudents, getcoachSelected, updateStudentsCoach, getBillById, updateStudent, updateStudentImage}

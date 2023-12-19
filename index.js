@@ -1,7 +1,7 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents  } from "./helpers/db.js";
-import { registerStudent, deleteUnpaidStudents } from "./helpers/studentDb.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent  } from "./helpers/db.js";
+import { registerStudent, deleteUnpaidStudents, getStudents } from "./helpers/studentDb.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
 //Fix para __direname
@@ -85,20 +85,29 @@ app.get("/monthbills",authorization.soloAdmin, async function (req,res) {
   res.render(__dirname + "/pages/admin/monthbills.ejs", {bills, monthIncome});
 });
 
-app.get("/studentsssss",authorization.soloAdmin, async function (req,res) {
-  const bills = await getAllbills();
-  console.log(bills)
-  res.render(__dirname + "/pages/admin/students.ejs", {bills});
+app.get("/allstudents",authorization.soloAdmin, async function (req,res) {
+  const students = await getStudents();
+  res.render(__dirname + "/pages/admin/students.ejs", {students});
 });
 
 app.get("/ver-coaches",authorization.soloAdmin, async function(req,res) {
   const coaches = await getCoaches();
   res.render(__dirname + "/pages/admin/coaches.ejs", { coaches });
 });
+app.get("/coachInvoices/:id",authorization.soloAdmin, async function(req,res) {
+  const coachId = req.params.id;
+ const coachBills = await getBillsbyId(coachId)
+ const coach = await getCoachbyId(coachId)
+ res.render(__dirname + "/pages/admin/coachInvoices.ejs", { coachBills, coach });
+});
 app.get("/noAccess",(req,res)=> res.sendFile(__dirname + "/pages/admin/noperms.html")); //esto hay q reacerlo no tiene sentido..
 app.post('/api/updatecoachadmin',authorization.soloAdmin, (req, res) => UpdateCoachAdmin(req, res));
 app.post('/api/deletecoach',authorization.soloAdmin, (req, res) => deleteCoach(req, res));
-//
+app.post('/api/updatestudentadmin',authorization.soloAdmin, (req, res) => UpdateStudentAdmin(req, res));
+app.post('/api/becarstudent',authorization.soloAdmin, (req, res) => becarstudent(req, res));
+app.post('/api/sacarbeca',authorization.soloAdmin, (req, res) => sacarbeca(req, res));
+app.post('/api/deletestudent',authorization.soloAdmin, (req, res) => deletestudent(req, res));
+///api/
 
 //coaches
 app.get("/mybills",authorization.soloCoaches, async function(req,res) {

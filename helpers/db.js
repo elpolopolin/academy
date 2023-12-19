@@ -12,7 +12,7 @@ const pool = mysql.createPool({
   host: 'sql5.freemysqlhosting.net',
   user: process.env.SQL_USER || '',
   password: process.env.SQL_PASSWORD || '',
-  database: 'sql5669660'
+  database: 'sql5671391'
 });
 
 
@@ -96,8 +96,8 @@ async function getAllbills() {
       pool.query(
         'SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname, students.fullname AS username ' +
         'FROM bills ' +
-        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
-        'INNER JOIN students ON bills.clientId = students.id ' +
+        'LEFT JOIN coaches ON bills.coachId = coaches.id ' +
+        'LEFT JOIN students ON bills.clientId = students.id ' +
         'ORDER BY bills.billDate DESC',
         function (err, rows, fields) {
           if (err) {
@@ -126,7 +126,7 @@ async function getunpaidBills() {
     const bills = await new Promise((resolve, reject) => {
       pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
         'FROM bills ' +
-        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
+        'LEFT JOIN coaches ON bills.coachId = coaches.id ' +
         'WHERE bills.paid = 0 ' +  // Agrega esta línea para filtrar solo facturas no pagadas
         'ORDER BY bills.billDate DESC', function (err, rows, fields) {
           if (err) {
@@ -153,8 +153,8 @@ async function getInProgressBills() {
     const bills = await new Promise((resolve, reject) => {
       pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
         'FROM bills ' +
-        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
-        'WHERE bills.paid = 0 AND bills.sessionId IS NOT NULL ' +  // Agrega esta línea para filtrar solo facturas no pagadas
+        'LEFT JOIN coaches ON bills.coachId = coaches.id ' +
+        'LEFT bills.paid = 0 AND bills.sessionId IS NOT NULL ' +  // Agrega esta línea para filtrar solo facturas no pagadas
         'ORDER BY bills.billDate DESC', function (err, rows, fields) {
           if (err) {
             reject(err);
@@ -228,9 +228,10 @@ async function getBillById(id) {
   try {
     const rows = await new Promise((resolve, reject) => {
       pool.query(
-        'SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
+        'SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname, students.fullname AS studentName ' +
         'FROM bills ' +
-        'INNER JOIN coaches ON bills.coachId = coaches.id ' +
+        'LEFT JOIN coaches ON bills.coachId = coaches.id ' +
+        'LEFT JOIN students ON bills.clientId = students.id ' +
         'WHERE bills.id = ? ' +  
         'ORDER BY bills.billDate DESC',
         [id], 
@@ -370,15 +371,28 @@ function updateCoachInDatabaseAdmin(coachId, valoresUpdate) {
     );
   });
 }
+function updateStudentInDatabaseAdmin(studentId, valoresUpdate) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'UPDATE students SET email = ?, fullname = ?, address = ?, phone = ?  WHERE id = ?',
+      [valoresUpdate.email, valoresUpdate.fullname, valoresUpdate.address, valoresUpdate.phone, studentId],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
 
 async function UpdateCoachAdmin(req, res) {
   // console.log("update coaches desde admin")
   const coaches = await getCoaches();
-
   // Sacar id del coachlogged a ver si es admin
   const admin = revisarCookie(req, coaches, "admin");
   //console.log("es admin ",admin)
-
   const valoresUpdate = req.body;
   const coachId = req.body.id;
   if (admin == 1) {
@@ -393,7 +407,89 @@ async function UpdateCoachAdmin(req, res) {
     console.log("intenta updatear coaches pero no es admin")
   }
 
+}
+async function UpdateStudentAdmin(req, res) {
+  const coaches = await getCoaches();
+  const admin = revisarCookie(req, coaches, "admin");
+  const valoresUpdate = req.body;
+  const studentId = req.body.id;
+  if (admin == 1) {
+    try {
+      const result = await updateStudentInDatabaseAdmin(studentId, valoresUpdate);
+      res.json({ success: true, message: 'Coach updated successfully', result });
+    } catch (error) {
+      console.error('Error updating coach:', error);
+      res.status(500).json({ success: false, message: 'Error updating coach' });
+    }
+  } else {
+    console.log("intenta updatear coaches pero no es admin")
+  }
+}
+async function becarstudent(req, res) {
+  const coaches = await getCoaches();
+  const admin = revisarCookie(req, coaches, "admin");
+  const studentId = req.body.id;
+  if (admin == 1) {
+    try {
+      const result = await becarBD(studentId);
+      res.json({ success: true, message: 'Coach updated successfully', result });
+    } catch (error) {
+      console.error('Error updating coach:', error);
+      res.status(500).json({ success: false, message: 'Error updating coach' });
+    }
+  } else {
+    console.log("intenta updatear coaches pero no es admin")
+  }
+}
 
+function becarBD(studentId) {
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'UPDATE students SET paid=1, scholarship=1 WHERE id = ?',
+      [studentId],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+async function sacarbeca(req, res) {
+  const coaches = await getCoaches();
+  const admin = revisarCookie(req, coaches, "admin");
+  const studentId = req.body.id;
+  if (admin == 1) {
+    try {
+      const result = await sacarbecaBd(studentId);
+      res.json({ success: true, message: 'Coach updated successfully', result });
+    } catch (error) {
+      console.error('Error updating coach:', error);
+      res.status(500).json({ success: false, message: 'Error updating coach' });
+    }
+  } else {
+    console.log("intenta updatear coaches pero no es admin")
+  }
+}
+
+function sacarbecaBd(studentId) {
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'UPDATE students SET scholarship=0 WHERE id = ?',
+      [studentId],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
 }
 
 function updateBillState(billId) {
@@ -448,6 +544,37 @@ async function deleteCoach(req, res) {
   } else {
     console.log("intenta deletear coaches pero no es admin")
   }
+}
+async function deletestudent(req, res) {
+  const coaches = await getCoaches();
+  const admin = revisarCookie(req, coaches, "admin");
+  const studentId = req.body.id;
+  if (admin == 1) {
+    try {
+      const result = await deletestudentbd(studentId);
+      res.json({ success: true, message: 'Coach updated successfully', result });
+    } catch (error) {
+      console.error('Error updating coach:', error);
+      res.status(500).json({ success: false, message: 'Error updating coach' });
+    }
+  } else {
+    console.log("intenta deletear coaches pero no es admin")
+  }
+}
+function deletestudentbd(studentId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'DELETE FROM students WHERE id = ?',
+      [studentId],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
 }
 
 function deleteCoachBd(coachId) {
@@ -567,4 +694,5 @@ async function registerStudent(req, res) {
 
 //
 
-export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents };
+export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, 
+  CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent };

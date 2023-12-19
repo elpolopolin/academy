@@ -1,7 +1,7 @@
 import { Router } from "express";
 import express from "express";
 import { createSession } from "../../controllers/paymentStudent.js";
-import { getInProgressStudents, updateStudentState, getStudentById, deleteUnpaidStudents, deleteUser, getStudents, getcoachSelected, updateStudentsCoach } from "../../helpers/studentDb.js";
+import { getInProgressStudents, updateStudentState, getStudentById, deleteUnpaidStudents, deleteUser, getStudents, getcoachSelected, updateStudentsCoach, getBillById, updateStudent, updateStudentImage } from "../../helpers/studentDb.js";
 import { getCoaches } from "../../helpers/db.js";
 import Stripe from "stripe";
 import {methods as authorization} from "../../middlewares/authorization.js";
@@ -9,11 +9,11 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import revisarCookie2 from "../../helpers/revisarCookie2.js";
-
+import multer from 'multer';
 const router = Router()
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const app = express();
+
 
 router.get("/create-student",authorization.soloPublico, (req,res)=> res.render(__dirname + "/pages/registerStudent.ejs"));
 router.post('/api/updateUserCoach',authorization.soloStudents, (req, res) => updateStudentsCoach(req, res))
@@ -23,7 +23,7 @@ router.get('/create-student/success/:id', async (req, res) => {
     const students = await getInProgressStudents()
 
     for (const student of students) {
-        const session = await stripe.checkout.sessions.retrieve(student.sessionid);
+        const session = await stripe.checkout.sessions.retrieve(student.sessionId);
        // console.log(session)
         if(session.payment_status === 'paid'){ await updateStudentState(student.id) }
     }
@@ -61,6 +61,52 @@ router.get('/create-student/cancel/:id', async (req, res) => {
     //console.log(coachSelected);
     res.render(__dirname + "/pages/students/coaches.ejs", { coaches, coachSelected });
   });
+  router.get("/students/mybills",authorization.soloStudents, async function(req,res) { 
+    const students = await getStudents();
+    const studentId = revisarCookie2(req, students, "id");
+    const bills = await getBillById(studentId);
+    console.log(bills)
+    res.render(__dirname + "/pages/students/mybills.ejs", { bills });
+  });
+  router.get("/students/account",authorization.soloStudents, async function(req,res) { 
+    const students = await getStudents();
+    const studentId = revisarCookie2(req, students, "id");
+  try {
+    const student = await getStudentById(studentId);
+    res.render(__dirname + "/pages/students/account.ejs", { student });
+  } catch (error) {
+    console.error("Error al obtener datos del student:", error);
+    res.redirect("/error");
+    res.status(500).send("Error interno del servidor");
+  }
+  });
+  const multerMiddleware = multer({
+    storage: multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, 'public/imagenesStudents');
+      },
+      filename: function (req, file, cb) {
+        const extname = path.extname(file.originalname);
+        const filename = `${Date.now()}${extname}`;
+        cb(null, filename);
+      },
+    }),
+    fileFilter: function (req, file, cb) {
+      const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+      const extname = path.extname(file.originalname).toLowerCase();
+  
+      if (allowedExtensions.includes(extname)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Solo se permiten archivos de imagen con extensiones .jpg, .jpeg, .png o .gif'), false);
+      }
+    },
+  });
+  
+  router.post('/api/updatestudent', (req, res) => updateStudent(req, res));
+  router.post('/api/uploadimagestudent', multerMiddleware.single('imagenstudent'), (req, res) => updateStudentImage(req, res));
+
+  
 
  
 

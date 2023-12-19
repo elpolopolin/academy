@@ -25,6 +25,32 @@
         min-height: 100svh;
         font-size: larger;
       }
+      .thank {
+    flex: 70%;
+    font-size: 4.5vw;
+}
+.btn {
+      width: 25%;
+    }
+    .logo {
+      float: right;
+       width: 20%;
+      height: 80%
+    }
+
+  @media  (max-width: 700px) {
+    .thank {
+        font-size: 8vw; 
+    }
+    .btn {
+      width: 50%;
+    }
+    .logo { 
+      float: right;
+       width: 50%;
+      height: 80%
+    }
+  }
     </style>
   </head>
 
@@ -35,19 +61,19 @@
           <div class="card-body mx-4">
             <div class="container">
               <div class="d-flex">
-                <p class="my-5 display-1" style="flex: 70%; font-size: 4.5vw">
+                <p class="thank my-5 display-1" >
                   Thank you for your confidence
                 </p>
                 <img
-                  src="/logo.png"
+                  src="/logo2.png"
                   alt="logo"
-                  class="my-5"
-                  style="float: right; width: 20%; height: 80%"
+                  class="logo my-5"
+              
                 />
               </div>
               <div class="row">
                 <ul class="list-unstyled">
-                  <li class="text-black">Client Name: <%= bill.clientId %></li>
+                  <li class="text-black">Client Name: <%= bill.studentName %></li>
                   <li class="text-black mt-1">
                     Bill Date: <%= bill.billDate %>
                   </li>
@@ -75,7 +101,7 @@
               </div>
 
               <div id="paid" style="font-size: 50%" data-bill-paid="<%= bill.paid %>">
-              <button class="btn" id="checkout" style="margin: auto; display: block; width: 15%;"></button> 
+              <button class="btn" id="checkout" style="margin: auto; display: block; "></button> 
             </div>
               
               <div class="text-center" style="margin-top: 90px">
