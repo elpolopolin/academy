@@ -154,7 +154,7 @@ async function getInProgressBills() {
       pool.query('SELECT bills.*, coaches.name AS coachName, coaches.surname AS coachSurname ' +
         'FROM bills ' +
         'LEFT JOIN coaches ON bills.coachId = coaches.id ' +
-        'LEFT bills.paid = 0 AND bills.sessionId IS NOT NULL ' +  // Agrega esta línea para filtrar solo facturas no pagadas
+        'WHERE bills.paid = 0 AND bills.sessionId IS NOT NULL ' +  // Agrega esta línea para filtrar solo facturas no pagadas
         'ORDER BY bills.billDate DESC', function (err, rows, fields) {
           if (err) {
             reject(err);

@@ -12,6 +12,7 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100svh;
       font-size: larger;
+      background-color: #6495ed;
     }
     .selected-card {
     background-color: #cce5ff; /* Cambia el color de fondo según tus preferencias */
@@ -95,7 +96,7 @@
     <div class="container mt-4">
         <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search coaches...">
         <% for (let i = 0; i < coaches.length; i++) { %>
-            <div id="card" class="card mb-3 <%= coaches[i].id === coachSelected ? 'selected-card' : '' %>" onclick="logCoachId('<%= coaches[i].id %>')">
+            <div id="card " class="card mb-3 shadow-lg <%= coaches[i].id === coachSelected ? 'selected-card' : '' %>" onclick="logCoachId('<%= coaches[i].id %>')">
               <div class="d-flex">
                 <div class="col-md-4">
                   <!-- Coach Profile Picture -->

@@ -85,7 +85,7 @@
     const formData = new FormData(e.target);
         console.log(formData)
 
-    const res = await fetch("http://localhost:4000/api/registerStudent", {
+    const res = await fetch("http://localhost:4000/create-student", { 
       method: "POST",
       headers: {
         "Content-Type": "application/json"
