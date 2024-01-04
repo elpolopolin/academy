@@ -157,8 +157,30 @@
       const capacity = document.getElementById('capacity').value;
       const selectedDays = Array.from(document.querySelectorAll('#days button.btn-primary'))
         .map(button => button.dataset.day);
-        
-        
+        console.log('Días Seleccionados:', selectedDays);
+
+        fetch("http://localhost:4000/api/newClass", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            className,
+            description,
+            level,
+            capacity,
+            selectedDays,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            location.reload();
+          })
+          .catch((error) => {
+            console.error("Error updating class:", error);
+          });
+      
     }
   </script>
 </body>

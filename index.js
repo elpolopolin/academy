@@ -1,6 +1,7 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
-import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent, getCoachClasses  } from "./helpers/db.js";
+import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, 
+  updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent, getCoachClasses, createNewClass,   } from "./helpers/db.js";
 import { registerStudent, deleteUnpaidStudents, getStudents } from "./helpers/studentDb.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
@@ -107,6 +108,8 @@ app.post('/api/updatestudentadmin',authorization.soloAdmin, (req, res) => Update
 app.post('/api/becarstudent',authorization.soloAdmin, (req, res) => becarstudent(req, res));
 app.post('/api/sacarbeca',authorization.soloAdmin, (req, res) => sacarbeca(req, res));
 app.post('/api/deletestudent',authorization.soloAdmin, (req, res) => deletestudent(req, res));
+app.post('/api/register-student',authorization.soloPublico, (req, res) => registerStudent(req, res));
+//
 ///api/
 
 //coaches
@@ -127,7 +130,7 @@ app.get("/group-classes",authorization.soloCoaches, async function(req,res) {
   res.render(__dirname + "/pages/coaches/groupclasses.ejs", { coachClasses });
 });
 
-
+app.post("/api/newClass",authorization.soloCoaches, (req, res) => createNewClass(req, res));
 app.post("/api/newbill",authorization.soloCoaches, (req, res) => CreateBilll(req, res));
 
 app.get("/Account", authorization.soloCoaches, async function (req, res) {

@@ -22,6 +22,13 @@
     cursor: pointer; 
     transition: transform 0.2s; 
   }
+  .container {
+
+padding: 20px; /* Añadir espacio alrededor del contenido */
+border-radius: 10px; /* Bordes redondeados */
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  
+}
 
   .card:hover {
     transform: scale(1.03);
@@ -52,6 +59,9 @@
                       <a class="nav-link" href="/students/mybills">My Bills</a>
                   </li>
                   <li class="nav-item">
+                    <a class="nav-link" href="/students/classes">Classes</a>
+                </li>
+                  <li class="nav-item">
                       <form id="logoutForm" action="/logout" method="post" style="display: none;">
 
                       </form>
@@ -74,7 +84,7 @@
         
       <div class="row hidden-md-up">
         <% for (let i = 0; i < bills.length; i++) { %>
-        <div class="col-md-4" style="margin-top: 5%">
+        <div class="col-md-4" style="margin-top: 2%">
           <div class="card p-4"   onclick="viewBill('<%= bills[i].id %>')" >
             <div class="d-flex justify-content-between">
               <h4 class="card-title">Bill Id: <%= bills[i].id %></h4>

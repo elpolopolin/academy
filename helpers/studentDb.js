@@ -280,6 +280,22 @@ async function getcoachSelected(id) {
     );
   });
 }
+async function getCoachClasses(id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      'SELECT * FROM groupClasses WHERE coachId = ?',
+      [id],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          console.log("coach classes" + result)
+            resolve(result);
+        }
+      }
+    );
+  });
+}
 async function updateStudentsCoach(req, res) {
   const students = await getStudents();
   const studentId = revisarCookie2(req, students, "id");
@@ -373,4 +389,4 @@ async function updateStudentImage(req, res) {
 }
 
  export {registerStudent, updateStudentSession, getInProgressStudents, updateStudentState, getIdbyUsername, getStudentById, deleteUser,
-   deleteUnpaidStudents, getStudents, getcoachSelected, updateStudentsCoach, getBillById, updateStudent, updateStudentImage}
+   deleteUnpaidStudents, getStudents, getcoachSelected, updateStudentsCoach, getBillById, updateStudent, updateStudentImage, getCoachClasses}

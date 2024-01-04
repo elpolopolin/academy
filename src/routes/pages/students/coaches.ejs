@@ -51,6 +51,12 @@
     border: 1px solid #007bff; /* Cambia el borde al color que desees */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade una sombra sutile */
 } 
+  .container {
+  padding: 10px; /* Añadir espacio alrededor del contenido */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  }
+
     </style>
 </head>
 <body>
@@ -82,6 +88,9 @@
                         <a class="nav-link" href="/students/mybills">My Bills</a>
                     </li>
                     <li class="nav-item">
+                      <a class="nav-link" href="/students/classes">Classes</a>
+                  </li>
+                    <li class="nav-item">
                         <form id="logoutForm" action="/logout" method="post" style="display: none;">
   
                         </form>
@@ -93,10 +102,10 @@
     </nav>
    
 
-    <div class="container mt-4">
+    <div class="container mt-2">
         <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search coaches...">
         <% for (let i = 0; i < coaches.length; i++) { %>
-            <div id="card " class="card mb-3 shadow-lg <%= coaches[i].id === coachSelected ? 'selected-card' : '' %>" onclick="logCoachId('<%= coaches[i].id %>')">
+            <div id="card " style="padding: 10px;  border-radius: 10px;" class="card mb-3 shadow-lg <%= coaches[i].id === coachSelected ? 'selected-card' : '' %>"  onclick="logCoachId('<%= coaches[i].id %>')">
               <div class="d-flex">
                 <div class="col-md-4">
                   <!-- Coach Profile Picture -->
@@ -106,7 +115,7 @@
                     <img src="<%= coaches[i].profilepicture %>" alt="User Avatar" class="img-fluid mx-auto d-block">
                   <% } %>
                 </div>
-                <div class="card-body">
+                <div class="card-body ">
                   <h5 class="card-title"><%= coaches[i].name %> <%= coaches[i].surname %></h5> 
                   <p class="card-text"> <%= coaches[i].phone %></p>
                 </div>  

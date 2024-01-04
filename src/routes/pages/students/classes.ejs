@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  </head>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      font-size: larger;
+      background-color: #6495ed;
+    }
+  
+    .container {
+
+      padding: 20px; /* Añadir espacio alrededor del contenido */
+      border-radius: 10px; /* Bordes redondeados */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+        
+    }
+  
+    .search-input {
+      margin-bottom: 20px; /* Espacio inferior para separar la barra de búsqueda */
+    }
+  
+    .card {
+      border: 1px solid #dee2e6; /* Borde delgado alrededor de la tarjeta */
+      border-radius: 10px; /* Bordes redondeados */
+      margin-bottom: 20px; /* Espacio inferior entre las tarjetas */
+    }
+    #card:hover {
+    cursor: pointer;
+    border: 1px solid #007bff; /* Cambia el borde al color que desees */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade una sombra sutile */
+} 
+  
+    .card-body {
+      padding: 20px; /* Añadir espacio alrededor del contenido dentro de la tarjeta */
+    }
+  
+    .card-title {
+      font-size: 1.5em; /* Tamaño del título */
+      margin-bottom: 10px; /* Espacio inferior para separar el título del resto del contenido */
+    }
+  
+    .card-text {
+      color: #6c757d; /* Color de texto más oscuro para la descripción y otros textos */
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="loadingOverlay" class="overlay bg-black d-none">   </div>
+    <div id="loadingSpinner" class="spinner-border spinner-center d-none" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/students">
+                <img src="../logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+                Students Area
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/account">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/coaches">Coaches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/mybills">My Bills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/classes">Classes</a>
+                    </li>
+                    <li class="nav-item">
+                        <form id="logoutForm" action="/logout" method="post" style="display: none;">  
+                        </form>
+                        <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+   
+
+    <div class="container mt-4 ">
+        <input type="text" id="searchInput" class="form-control search-input" placeholder="Search coaches...">
+        <div class="row">
+          <% for (let i = 0; i < coachClasses.length; i++) { %>
+            <div class="col-md-4 mb-4">
+              <div id="card" class="card">
+                <div class="card-body">
+                  <h5 class="card-title "><%= coachClasses[i].className %> </h5>
+                  <p class="card-text">Description: <%= coachClasses[i].description %></p>
+                  <p class="card-text">Level: <%= coachClasses[i].level %></p>
+                  <p class="card-text">Capacity: <%= coachClasses[i].capacity %></p>
+                  <p class="card-text">Coach: <%= coachClasses[i].coachName %> </p>
+                </div>  
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+  </main>
+
+
+  <script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script>
+  function logout() {
+    // Simula el envío del formulario de logout
+    document.getElementById('logoutForm').submit();
+  }
+
+  document.getElementById('searchInput').addEventListener('input', function () {
+  const searchValue = this.value.toLowerCase();
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    const classNameElement = card.querySelector('.card-title');
+    const descriptionElement = card.querySelector('.card-text');
+
+    const className = classNameElement.textContent.toLowerCase();
+    const description = descriptionElement.textContent.toLowerCase();
+
+    const shouldDisplay = className.includes(searchValue) || description.includes(searchValue);
+    card.style.display = shouldDisplay ? 'block' : 'none';
+  });
+});
+</script>
+</body>
+</html>

@@ -708,7 +708,102 @@ async function registerStudent(req, res) {
   });
 }
 
+async function createNewClass(req, res) {
+  const coaches = await getCoaches();
+  // Sacar id del coachlogged
+  const coachId = revisarCookie(req, coaches, "id");
+  console.log("este es el coach id: ", coachId)
+  const data = req.body;
+
+  try {
+    const result = await CreateClassDb(coachId, data);
+    res.json({ success: true, message: 'Class updated successfully', result });
+  } catch (error) {
+    console.error('Error updating Class:', error);
+    res.status(500).json({ success: false, message: 'Error updating coach' });
+  }
+}
+
+async function CreateClassDb(coachId, data) {
+  const insertClassQuery = `
+    INSERT INTO groupClasses (coachId, description, level, capacity, className)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  const insertClassDaysQuery = `
+    INSERT INTO class_days (classId, classDay)
+    VALUES (?, ?)
+  `;
+
+  return new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      connection.beginTransaction((beginTransactionErr) => {
+        if (beginTransactionErr) {
+          reject(beginTransactionErr);
+          connection.release();
+          return;
+        }
+
+        connection.query(
+          insertClassQuery,
+          [coachId, data.description, data.level, data.capacity, data.className],
+          (insertClassErr, result) => {
+            if (insertClassErr) {
+              connection.rollback(() => {
+                reject(insertClassErr);
+                connection.release();
+              });
+              return;
+            }
+
+            const classId = result.insertId;
+
+            const daysInsertPromises = data.selectedDays.map((classDay) => {
+              return new Promise((resolveDays, rejectDays) => {
+                connection.query(
+                  insertClassDaysQuery,
+                  [classId, classDay],
+                  (insertDaysErr, daysResult) => {
+                    if (insertDaysErr) {
+                      rejectDays(insertDaysErr);
+                    } else {
+                      resolveDays(daysResult);
+                    }
+                  }
+                );
+              });
+            });
+
+            Promise.all(daysInsertPromises)
+              .then(() => {
+                connection.commit((commitErr) => {
+                  if (commitErr) {
+                    reject(commitErr);
+                  } else {
+                    resolve(result);
+                  }
+                  connection.release();
+                });
+              })
+              .catch((daysInsertErr) => {
+                connection.rollback(() => {
+                  reject(daysInsertErr);
+                  connection.release();
+                });
+              });
+          }
+        );
+      });
+    });
+  });
+}
+
 //
 
 export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, getCoachClasses,
-  CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent };
+  CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent, createNewClass };

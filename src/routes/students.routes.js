@@ -1,7 +1,7 @@
 import { Router } from "express";
 import express from "express";
 import { createSession } from "../../controllers/paymentStudent.js";
-import { getInProgressStudents, updateStudentState, getStudentById, deleteUnpaidStudents, deleteUser, getStudents, getcoachSelected, updateStudentsCoach, getBillById, updateStudent, updateStudentImage } from "../../helpers/studentDb.js";
+import { getInProgressStudents, updateStudentState, getStudentById, deleteUnpaidStudents, deleteUser, getStudents, getcoachSelected, updateStudentsCoach, getBillById, updateStudent, updateStudentImage, getCoachClasses } from "../../helpers/studentDb.js";
 import { getCoaches } from "../../helpers/db.js";
 import Stripe from "stripe";
 import {methods as authorization} from "../../middlewares/authorization.js";
@@ -67,6 +67,13 @@ router.get('/create-student/cancel/:id', async (req, res) => {
     const bills = await getBillById(studentId);
     console.log(bills)
     res.render(__dirname + "/pages/students/mybills.ejs", { bills });
+  });
+  router.get("/students/classes",authorization.soloStudents, async function(req,res) { 
+    const students = await getStudents();
+    const studentId = revisarCookie2(req, students, "id");
+    const coachSelected = await getcoachSelected(studentId);
+    const coachClasses = await getCoachClasses(coachSelected);
+    res.render(__dirname + "/pages/students/classes.ejs", { coachClasses });
   });
   router.get("/students/account",authorization.soloStudents, async function(req,res) { 
     const students = await getStudents();
