@@ -18,6 +18,12 @@
       font-size: larger;
       background-color: #6495ed;
     }
+    .container {
+  padding: 10px; /* Añadir espacio alrededor del contenido */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  }
+
     </style>
 </head>
 <body>
@@ -59,7 +65,7 @@
 
    
 
-  <div class="account mt-4">
+  <div class="account mt-2">
     <div class="container">
         <div class="row gutters">
         <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
@@ -79,10 +85,8 @@
                         <h6 class="text-decoration-underline"><%= student.mail %></h6>
                     </div>
                     <div class="about">
-                        <h5>About:</h5>
-                        <p>Address: <%= student.address %></p>
-                        <p>Club: <%= student.club %></p>
-                        <p>birthdate: <%= student.birthdate %></p>
+                        <h3 class="text-center "><%= student.fullname.toUpperCase() %></h3>
+                        
                     </div>
                 </div>
             </div>  

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  </head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      font-size: larger;
+      background-color: #6495ed;
+    }
+  
+    .container {
+
+      padding: 20px; /* Añadir espacio alrededor del contenido */
+      border-radius: 10px; /* Bordes redondeados */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+        
+    }
+  
+    .card {
+      border: 1px solid #dee2e6; /* Borde delgado alrededor de la tarjeta */
+      border-radius: 10px; /* Bordes redondeados */
+      margin-bottom: 20px; /* Espacio inferior entre las tarjetas */
+    }
+ 
+
+    .card-body {
+      padding: 20px; /* Añadir espacio alrededor del contenido dentro de la tarjeta */
+    }
+   
+  
+    .card-title {
+      font-size: 1.5em; /* Tamaño del título */
+      margin-bottom: 10px; /* Espacio inferior para separar el título del resto del contenido */
+    }
+  
+    .card-text {
+      color: #6c757d; /* Color de texto más oscuro para la descripción y otros textos */
+    }
+    
+    .disabled-overlay {
+        position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Ajusta la opacidad según sea necesario */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  }
+
+  .spinner-center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1001; /* Asegura que esté por encima del fondo oscuro */
+}
+  </style>
+</head>
+<body>
+  <main>
+    <div id="disabledOverlay" class="disabled-overlay d-none">
+        <div class="spinner-border spinner-center " role="status">
+          <span class="visually-hidden spinner-center">Loading...</span>
+        </div>
+      </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/students">
+                <img src="../../../logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+                Students Area
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/account">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/coaches">Coaches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/mybills">My Bills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students/classes">Classes</a>
+                    </li>
+                    <li class="nav-item">
+                        <form id="logoutForm" action="/logout" method="post" style="display: none;">  
+                        </form>
+                        <a class="nav-link" href="#" id="logoutLink" onclick="logout()">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+   
+
+    <div class="container mt-4">
+        <!-- Primera card -->
+        <div class="card">
+          <div class="card-header text-center">
+            <h1 class="mb-0">
+              <%= classSelected[0].className.toUpperCase() %>
+            </h1>
+          </div>
+          <div class="card-body text-center">
+            <div class="d-flex flex-column align-items-center">
+              <img src="<%= classSelected[0].coachProfilePicture %>" class="rounded-circle mb-3" width="80" height="80" alt="Coach Image">
+              <h2 class="mb-0">
+                <%= classSelected[0].coachUsername %>
+              </h2>
+            </div>
+          </div>
+          <div class="card-footer text-center">
+            <b class="mb-0">
+                <%= classSelected[0].attending %> / <%= classSelected[0].capacity %>
+            </b>
+            <p class="mb-0">
+                <%= classSelected[0].description %>
+            </p>
+          </div>
+        </div>
+      
+        <% if (userAttendance.attendsClass) { %>
+            <div class="d-flex flex-wrap justify-content-center gap-3 mt-3 bg-white p-4 rounded shadow-md" role="group" aria-label="Days">
+                <% const allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; %>
+                <% for (let i = 0; i < allDays.length; i++) { %>
+                    <% const day = allDays[i]; %>
+                    <% const isSelected = userAttendance.attendanceDays.includes(day); %>
+                    <% const isDisabled = !isSelected; %>
+                    <button type="button" class="btn <%= isSelected ? ' btn-primary' : '' %><%= isDisabled ? ' disabled' : '' %>" data-day="<%= day %>">
+                        <%= day.substring(0, 3) %>
+                    </button>
+                <% } %>
+                <div class="w-100"></div>
+                <button type="button" class="btn btn-danger" onclick="leaveClass('<%= classSelected[0].id %>')">Leave / Change Days</button>
+            </div>
+        <% } else { %>
+            <div id="days" class="d-flex flex-wrap justify-content-center gap-3 mt-3 bg-white p-4 rounded shadow-md" role="group" aria-label="Days">
+                <% if (classSelected[0].classDays) { %>
+                    <% const days = classSelected[0].classDays.split(','); %>
+                    <% const allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; %>
+                    <% for (let i = 0; i < allDays.length; i++) { %>
+                        <% const day = allDays[i]; %>
+                        <% const isSelected = days.includes(day); %>
+                        <% const isDisabled = !isSelected; %>
+        
+                        <button type="button" class="btn btn-outline-secondary<%= isSelected ? ' active' : '' %><%= isDisabled ? ' disabled' : '' %>" data-day="<%= day %>">
+                            <%= day.substring(0, 3) %>
+                        </button>
+                    <% } %>
+                <% } %>
+                <div class="w-100"></div>
+                <button type="button" class="btn btn-success w-100" onclick="joinClass('<%= classSelected[0].id %>')">Join</button>
+            </div>
+        <% } %>
+              
+         <div class="mt-4 card">
+            <div class="card-header text-center">
+                <h1>Participants:</h1>
+            </div>
+            <% if (classSelected[0].attendingUserIds) { %>
+                <% const userIds = classSelected[0].attendingUserIds.split(','); %>
+                <% const userNames = classSelected[0].attendingUserNames.split(','); %>
+                <% const userProfilePictures = classSelected[0].attendingUserProfilePictures.split(','); %>
+                <div class="card-body">
+                    <% for (let i = 0; i < userIds.length; i++) { %>
+                        <div class="card" style="width: 100%;">
+                            <div class="d-flex align-items-center">
+                                <% if (userProfilePictures[i] == null || userProfilePictures[i] == 'null') { %>
+                                    <img src="../../../nopicture.jpg" alt="No Picture" class="rounded-circle m-2" width="40" height="40">
+                                <% } else { %>
+                                    <img src="<%= userProfilePictures[i] %>" class="rounded-circle m-2" width="40" height="40" alt="User Image">
+                                <% } %>
+                                <div class="card-body">
+                                    <h5 class="mb-0"><%= userNames[i] %></h5>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+            <div class="card-footer"></div>
+        </div>
+    </div>
+
+  </main>
+
+
+  <script src="https://kit.fontawesome.com/2e4e857ba3.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script>
+  function logout() {
+    // Simula el envío del formulario de logout
+    document.getElementById('logoutForm').submit();
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    const daysButtons = document.querySelectorAll('#days button');
+
+    daysButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        this.classList.toggle('btn-primary');
+        this.classList.toggle('btn-outline-secondary');
+      });
+    });
+  });
+
+  function joinClass(id) {
+  const selectedDays = Array.from(document.querySelectorAll('#days button.btn-primary'))
+    .map(button => button.dataset.day);
+
+  if (!selectedDays || selectedDays.length === 0) {
+    location.reload();
+  }
+
+  disableButtons(true);
+
+  const valoresUpdate = {
+    days: selectedDays,
+    classId: id,
+  };
+
+  //console.log(valoresUpdate);
+
+  fetch('/api/joinClass', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(valoresUpdate)
+  })
+    .then(response => response.json())
+    .then(data => {
+      //console.log(data);
+      location.reload();
+    })
+    .catch(error => {
+      console.error('Error updating student:', error);
+    });
+}
+
+  function leaveClass(id) {
+    // Deshabilita los botones y muestra el icono de carga
+    disableButtons(true);
+    const valoresUpdate = {
+        classId: id,
+    };
+    //console.log(valoresUpdate);
+    fetch('/api/leaveClass', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(valoresUpdate)
+    })
+    .then(response => response.json())
+    .then(data => {
+       // console.log(data);
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error updating student:', error);
+    });
+  }
+    // Función para deshabilitar/ habilitar los botones y mostrar/ocultar el icono de carga
+    function disableButtons(disable) {
+    const buttons = document.querySelectorAll('#days button, .btn-danger, .btn-success');
+    const overlay = document.getElementById('disabledOverlay');
+
+    buttons.forEach(button => {
+      button.disabled = disable;
+    });
+
+    if (disable) {
+      overlay.classList.remove('d-none');
+    } else {
+      overlay.classList.add('d-none');
+    }
+  }
+</script>
+</body>
+</html>

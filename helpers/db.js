@@ -708,6 +708,31 @@ async function registerStudent(req, res) {
   });
 }
 
+function getAllClasses() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT
+      groupClasses.*,
+      coaches.username AS coachUsername,
+      coaches.profilepicture AS coachProfilePicture,
+      GROUP_CONCAT(class_days.classDay ORDER BY FIELD(class_days.classDay, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')) AS classDays
+  FROM groupClasses
+  LEFT JOIN coaches ON groupClasses.coachId = coaches.id
+  LEFT JOIN class_days ON groupClasses.id = class_days.classId
+  GROUP BY groupClasses.id;`,
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          //console.log("Coach classes: " + JSON.stringify(result));
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+
 async function createNewClass(req, res) {
   const coaches = await getCoaches();
   // Sacar id del coachlogged
@@ -805,5 +830,5 @@ async function CreateClassDb(coachId, data) {
 
 //
 
-export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, getCoachClasses,
+export { getInProgressBills, getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, getCoachClasses, getAllClasses,
   CreateBilll, updateBillState, updateBillSession, updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent, createNewClass };

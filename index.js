@@ -1,7 +1,7 @@
 
 import revisarCookie from "./helpers/revisarCookies.js";
 import {getCoachbyId, getBillsbyId, UpdateCoach, getCoaches, getAllbills, UpdateCoachAdmin, deleteCoach, getBillById, getCoachesElement, CreateBilll, 
-  updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent, getCoachClasses, createNewClass,   } from "./helpers/db.js";
+  updateCoachImage, getunpaidBills, getBillsForCurrentMonth, getCoachStudents, UpdateStudentAdmin, becarstudent, sacarbeca, deletestudent, getCoachClasses, createNewClass, getAllClasses,   } from "./helpers/db.js";
 import { registerStudent, deleteUnpaidStudents, getStudents } from "./helpers/studentDb.js";
 import  express  from "express";
 import cookieParser from 'cookie-parser';
@@ -84,6 +84,10 @@ app.get("/monthbills",authorization.soloAdmin, async function (req,res) {
   const bills = all.bills;
   const monthIncome = all.monthIncome;
   res.render(__dirname + "/pages/admin/monthbills.ejs", {bills, monthIncome});
+});
+app.get("/classes",authorization.soloAdmin, async function(req,res) { 
+  const AllClasses = await getAllClasses();
+  res.render(__dirname + "/pages/admin/classes.ejs", { AllClasses });
 });
 
 app.get("/allstudents",authorization.soloAdmin, async function (req,res) {

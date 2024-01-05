@@ -1,7 +1,7 @@
 import { Router } from "express";
 import express from "express";
 import { createSession } from "../../controllers/paymentStudent.js";
-import { getInProgressStudents, updateStudentState, getStudentById, deleteUnpaidStudents, deleteUser, getStudents, getcoachSelected, updateStudentsCoach, getBillById, updateStudent, updateStudentImage, getCoachClasses } from "../../helpers/studentDb.js";
+import { getInProgressStudents, updateStudentState, getStudentById, deleteUnpaidStudents, deleteUser, getStudents, getcoachSelected, updateStudentsCoach, getBillById, updateStudent, updateStudentImage, getCoachClasses, getClassById, logUserAttendance, joinClass, leaveClass } from "../../helpers/studentDb.js";
 import { getCoaches } from "../../helpers/db.js";
 import Stripe from "stripe";
 import {methods as authorization} from "../../middlewares/authorization.js";
@@ -75,6 +75,16 @@ router.get('/create-student/cancel/:id', async (req, res) => {
     const coachClasses = await getCoachClasses(coachSelected);
     res.render(__dirname + "/pages/students/classes.ejs", { coachClasses });
   });
+  router.get("/students/classes/view/:id",authorization.soloStudents, async function(req,res) { 
+    const students = await getStudents();
+    const studentId = revisarCookie2(req, students, "id");
+    const userAttendance = await logUserAttendance(req.params.id, studentId);
+    const classSelected = await getClassById(req.params.id);
+    //console.log("la traje",classSelected)
+    res.render(__dirname + "/pages/students/verClase.ejs", { classSelected, userAttendance });
+  });
+ 
+
   router.get("/students/account",authorization.soloStudents, async function(req,res) { 
     const students = await getStudents();
     const studentId = revisarCookie2(req, students, "id");
@@ -109,7 +119,8 @@ router.get('/create-student/cancel/:id', async (req, res) => {
       }
     },
   });
-  
+  router.post('/api/joinClass', (req, res) => joinClass(req, res));
+  router.post('/api/leaveClass', (req, res) => leaveClass(req, res));
   router.post('/api/updatestudent', (req, res) => updateStudent(req, res));
   router.post('/api/uploadimagestudent', multerMiddleware.single('imagenstudent'), (req, res) => updateStudentImage(req, res));
 
