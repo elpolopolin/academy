@@ -4,21 +4,21 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
   e.preventDefault();
 
   const formData = new FormData(e.target);
+  const requestBody = {
+    name: formData.get("name"),
+    surname: formData.get("surname"),
+    user: formData.get("user").toLowerCase(), // Convertir a minúsculas
+    password: formData.get("password"),
+    email: formData.get("email").toLowerCase() || "null", // Convertir a minúsculas
+    phone: formData.get("phone-number") || "null",
+  };
 
   const res = await fetch("http://localhost:4000/api/register", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      name: formData.get("name"),
-      surname: formData.get("surname"),
-      user: formData.get("user") ,
-      password: formData.get("password"),
-      email: formData.get("email") || "null",
-      phone: formData.get("phone-number") || "null",
-      
-    })
+    body: JSON.stringify(requestBody),
   });
 
   if (!res.ok) {

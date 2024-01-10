@@ -3,7 +3,7 @@ import revisarCookie from "./revisarCookies.js";
 import dotenv from "dotenv";
 import path from 'path';
 import bcryptjs from "bcryptjs";
-
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
@@ -612,19 +612,11 @@ async function CreateBilll(req, res) {
   }
 }
 
-function getRandomId() {
-  return Math.floor(10000000 + Math.random() * 90000000);
-}
 
 async function CreateBillDb(coachId, data) {
-  const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' '); // Fecha actual en formato ISO
-  let randomId;
-  const bills = await getAllbills();
+  const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-  // Intentar generar un randomId único
-  do {
-    randomId = getRandomId();
-  } while (bills.some((bill) => bill.id === randomId));
+  const randomId = uuidv4(); // Genera un UUID único
 
   const insertQuery = `
     INSERT INTO bills (id, coachId, clientId, type, length, price, billDate, classDate, message)
@@ -692,10 +684,16 @@ async function registerStudent(req, res) {
   
  }
  function getCoachClasses(coachId) {
-
   return new Promise((resolve, reject) => {
     pool.query(
-      'SELECT * FROM groupClasses WHERE coachId = ?',
+      `SELECT groupClasses.*, 
+      coaches.username AS coachUsername,
+      GROUP_CONCAT(class_days.classDay ORDER BY FIELD(class_days.classDay, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')) AS classDays
+    FROM groupClasses
+    LEFT JOIN coaches ON groupClasses.coachId = coaches.id
+    LEFT JOIN class_days ON groupClasses.id = class_days.classId
+    WHERE coachId = ?
+    GROUP BY groupClasses.id`,  // Agrupar por la columna de clase
       [coachId],
       function (err, result) {
         if (err) {

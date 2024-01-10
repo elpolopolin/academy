@@ -310,28 +310,50 @@ async function getClassById(id) {
   return new Promise((resolve, reject) => {
     pool.query(
       `SELECT 
-      groupClasses.*,
-      coaches.username AS coachUsername,
-      coaches.profilepicture AS coachProfilePicture,
-      GROUP_CONCAT(DISTINCT class_days.classDay) AS classDays,
-      GROUP_CONCAT(DISTINCT user_attendance.user_id) AS attendingUserIds,
-      GROUP_CONCAT(DISTINCT students.fullname) AS attendingUserNames,
-      GROUP_CONCAT(DISTINCT students.profilepicture) AS attendingUserProfilePictures
-    FROM groupClasses
-    LEFT JOIN coaches ON groupClasses.coachId = coaches.id
-    LEFT JOIN class_days ON groupClasses.id = class_days.classId
-    LEFT JOIN user_attendance ON groupClasses.id = user_attendance.class_id
-    LEFT JOIN students ON user_attendance.user_id = students.id
-    WHERE groupClasses.id = ?
-    GROUP BY groupClasses.id;`,
+        groupClasses.*,
+        coaches.username AS coachUsername,
+        coaches.profilepicture AS coachProfilePicture,
+        GROUP_CONCAT(DISTINCT class_days.classDay) AS classDays,
+        GROUP_CONCAT(DISTINCT user_attendance.user_id) AS attendingUserIds
+      FROM groupClasses
+      LEFT JOIN coaches ON groupClasses.coachId = coaches.id
+      LEFT JOIN class_days ON groupClasses.id = class_days.classId
+      LEFT JOIN user_attendance ON groupClasses.id = user_attendance.class_id
+      LEFT JOIN students ON user_attendance.user_id = students.id
+      WHERE groupClasses.id = ?
+      GROUP BY groupClasses.id;`,
       [id],
-      function (err, result) {
+      async function (err, result) {
         if (err) {
           reject(err);
         } else {
-          
-         // //console.log("coach classes", result);
+         // console.log("CLASE: ", result);
+          // Obtener los IDs de los usuarios que asistieron
+          if (result[0].attendingUserIds){
+          const attendingUserIds = result[0].attendingUserIds.split(',');
+          // Consultar la información de los usuarios que asistieron
+          const userDetails = await getUserDetails(attendingUserIds);
+
+          result[0].attendingUsers = userDetails;
+        }
+          //console.log("atending users" + result[0].attendingUsers);
           resolve(result);
+        }
+      }
+    );
+  });
+}
+
+async function getUserDetails(userIds) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT id, fullname, profilepicture FROM students WHERE id IN (?)`,
+      [userIds],
+      function (err, userDetails) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(userDetails);
         }
       }
     );

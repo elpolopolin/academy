@@ -170,26 +170,19 @@
             <div class="card-header text-center">
                 <h1>Participants:</h1>
             </div>
-            <% if (classSelected[0].attendingUserIds) { %>
-                <% const userIds = classSelected[0].attendingUserIds.split(','); %>
-                <% const userNames = classSelected[0].attendingUserNames.split(','); %>
-                <% const userProfilePictures = classSelected[0].attendingUserProfilePictures.split(','); %>
-                <div class="card-body">
-                    <% for (let i = 0; i < userIds.length; i++) { %>
-                        <div class="card" style="width: 100%;">
-                            <div class="d-flex align-items-center">
-                                <% if (userProfilePictures[i] == null || userProfilePictures[i] == 'null') { %>
-                                    <img src="../../../nopicture.jpg" alt="No Picture" class="rounded-circle m-2" width="40" height="40">
-                                <% } else { %>
-                                    <img src="<%= userProfilePictures[i] %>" class="rounded-circle m-2" width="40" height="40" alt="User Image">
-                                <% } %>
-                                <div class="card-body">
-                                    <h5 class="mb-0"><%= userNames[i] %></h5>
-                                </div>
-                            </div>
-                        </div>
-                    <% } %>
-                </div>
+            <% if (classSelected[0].attendingUsers) { %>
+              <div class="card-body">
+                <% for (let i = 0; i < classSelected[0].attendingUsers.length; i++) { %>
+                  <div class="card" style="width: 100%;">
+                    <div class="d-flex align-items-center">
+                      <img src="<%= classSelected[0].attendingUsers[i].profilepicture %>" class="rounded-circle m-2" width="40" height="40" alt="User Image">
+                      <div class="card-body">
+                        <h5 class="mb-0"><%= classSelected[0].attendingUsers[i].fullname %></h5>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
             <% } %>
             <div class="card-footer"></div>
         </div>
@@ -220,9 +213,10 @@
   const selectedDays = Array.from(document.querySelectorAll('#days button.btn-primary'))
     .map(button => button.dataset.day);
 
-  if (!selectedDays || selectedDays.length === 0) {
+    if (!selectedDays || selectedDays.length === 0) {
+      alert("you must select one")
     location.reload();
-  }
+}
 
   disableButtons(true);
 

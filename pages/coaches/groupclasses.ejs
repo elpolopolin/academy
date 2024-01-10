@@ -117,16 +117,28 @@
     <% if (coachClasses.length > 0) { %>
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
         <% coachClasses.forEach(function(groupClass) { %>
-          <div class="col mb-4">
-            <div class="up card h-100">
-              <div class="card-body">
+          <div class="col mb-3">
+            <div class="up card h-100" onclick="viewClass()">
+              <div class="card-header">
                 <h5 class="card-title"><i class="bi bi-calendar"></i> <%= groupClass.className %></h5>
-                <p class="card-text"><i class="bi bi-person"></i> Coach ID: <%= groupClass.coachId %></p>
+              </div>
+              <div class="card-body">
                 <p class="card-text"><i class="bi bi-card-text"></i> Description: <%= groupClass.description %></p>
                 <p class="card-text"><i class="bi bi-bar-chart"></i> Level: <%= groupClass.level %></p>
-                <p class="card-text"><i class="bi bi-person-plus"></i> Capacity: <%= groupClass.capacity %></p>
+                <p class="card-text"><i class="bi bi-person-plus"></i> Capacity:  <%= groupClass.attending %> / <%= groupClass.capacity %></p>
+              </div>
+              <div class="card-footer bg-white">
+                <div class="class-days d-flex justify-content-center flex-wrap gap-2 align-items-center">
+                  <% const classDays = groupClass.classDays ? groupClass.classDays.split(',') : [] %>
+                  <% for (let j = 0; j < classDays.length; j++) { %>
+                    <div class="day-badge  p-1 border">
+                      <%= classDays[j] %>
+                    </div>
+                  <% } %>
+                </div>
               </div>
             </div>
+            
           </div>
         <% }) %>
       </div>
@@ -148,6 +160,10 @@
         });
       });
     });
+    function logout() {
+        // Simula el envío del formulario de logout
+        document.getElementById("logoutForm").submit();
+      }
   
     function saveNewClass() {
       

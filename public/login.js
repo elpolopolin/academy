@@ -2,7 +2,7 @@ const mensajeError = document.getElementsByClassName("error")[0]
 
 document.getElementById("login-form").addEventListener("submit",async (e)=>{
   e.preventDefault();
-  const username = e.target.children.user.value;
+  const username = e.target.children.user.value.toLowerCase();;
   const password = e.target.children.password.value;
 
 

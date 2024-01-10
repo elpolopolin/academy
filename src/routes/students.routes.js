@@ -80,7 +80,7 @@ router.get('/create-student/cancel/:id', async (req, res) => {
     const studentId = revisarCookie2(req, students, "id");
     const userAttendance = await logUserAttendance(req.params.id, studentId);
     const classSelected = await getClassById(req.params.id);
-    ////console.log("la traje",classSelected)
+    //console.log("la traje",classSelected)
     res.render(__dirname + "/pages/students/verClase.ejs", { classSelected, userAttendance });
   });
  
