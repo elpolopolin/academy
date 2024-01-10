@@ -24,7 +24,7 @@ router.get('/create-student/success/:id', async (req, res) => {
 
     for (const student of students) {
         const session = await stripe.checkout.sessions.retrieve(student.sessionId);
-       // console.log(session)
+       // //console.log(session)
         if(session.payment_status === 'paid'){ await updateStudentState(student.id) }
     }
     deleteUnpaidStudents();
@@ -33,7 +33,7 @@ router.get('/create-student/success/:id', async (req, res) => {
       student.paid === 1 ? res.render(__dirname + "/pages/success.ejs") : res.redirect(`/create-student/cancel/${req.params.id}`);
     } else {
       res.redirect(`/create-student/cancel/${req.params.id}`);
-      console.log("not found")
+      //console.log("not found")
     }
 }
 )
@@ -46,7 +46,7 @@ router.get('/create-student/cancel/:id', async (req, res) => {
         res.render(__dirname + "/pages/cancel.ejs");
       } else {
         res.render(__dirname + "/pages/cancel.ejs");
-        console.log("not found")
+        //console.log("not found")
       }
   });
 
@@ -56,16 +56,16 @@ router.get('/create-student/cancel/:id', async (req, res) => {
     const coaches = await getCoaches();
     const students = await getStudents();
     const studentId = revisarCookie2(req, students, "id");
-    //console.log("id del st loged", studentId);
+    ////console.log("id del st loged", studentId);
     const coachSelected = await getcoachSelected(studentId);
-    //console.log(coachSelected);
+    ////console.log(coachSelected);
     res.render(__dirname + "/pages/students/coaches.ejs", { coaches, coachSelected });
   });
   router.get("/students/mybills",authorization.soloStudents, async function(req,res) { 
     const students = await getStudents();
     const studentId = revisarCookie2(req, students, "id");
     const bills = await getBillById(studentId);
-    console.log(bills)
+    //console.log(bills)
     res.render(__dirname + "/pages/students/mybills.ejs", { bills });
   });
   router.get("/students/classes",authorization.soloStudents, async function(req,res) { 
@@ -80,7 +80,7 @@ router.get('/create-student/cancel/:id', async (req, res) => {
     const studentId = revisarCookie2(req, students, "id");
     const userAttendance = await logUserAttendance(req.params.id, studentId);
     const classSelected = await getClassById(req.params.id);
-    //console.log("la traje",classSelected)
+    ////console.log("la traje",classSelected)
     res.render(__dirname + "/pages/students/verClase.ejs", { classSelected, userAttendance });
   });
  

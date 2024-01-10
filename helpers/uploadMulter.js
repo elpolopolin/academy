@@ -3,20 +3,20 @@ import path from 'path';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      console.log("Estoy en destination");
+      //console.log("Estoy en destination");
       cb(null, 'public/imagenesCoaches'); // La carpeta donde se guardarán las imágenes públicas
     },
     filename: function (req, file, cb) {
       const extname = path.extname(file.originalname);
       const filename = `${Date.now()}${extname}`;
-      console.log("Estoy en filename");
+      //console.log("Estoy en filename");
       cb(null, filename);
     },
   });
   
     // Define una función para filtrar archivos de imagen
     const fileFilter = (req, file, cb) => {
-      console.log("estoy en multer");
+      //console.log("estoy en multer");
       const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif']; // Agrega las extensiones permitidas aquí
       const extname = path.extname(file.originalname).toLowerCase();
   

@@ -50,9 +50,9 @@ async function getStudents() {
 }
 
   /*
-console.log("coaches ", coaches)
+//console.log("coaches ", coaches)
 coaches.forEach(user => {
-  console.log("un user: ", user.username);
+  //console.log("un user: ", user.username);
 }); */
 
 
@@ -98,7 +98,7 @@ async function login(req, res) {
 
   res.cookie("jwt", token, cookieOption);
   const isStudent = usuarioAResvisar && usuarioAResvisar.paid !== undefined;
-  //console.log("es estudiante? ", isStudent)
+  ////console.log("es estudiante? ", isStudent)
   const isAdmin = usuarioAResvisar.admin === 1; // Assuming both coaches and students may have an 'admin' property
   if (isStudent) {
     return res.send({ status: "ok", message: "Usuario loggeado", redirect: "/students" });
@@ -130,8 +130,8 @@ async function register(req, res) {
   const salt = await bcryptjs.genSalt();
   const hashPassword = await bcryptjs.hash(password, salt);
 
-  // console.log("Longitud del hash bcrypt:", hashPassword.length);
-  // console.log("Longitud del hash bcrypt:", hashPassword);
+  // //console.log("Longitud del hash bcrypt:", hashPassword.length);
+  // //console.log("Longitud del hash bcrypt:", hashPassword);
 
   const nuevoUsuario = {
     user,

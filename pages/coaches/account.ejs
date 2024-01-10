@@ -152,7 +152,7 @@
     const inputPhone = document.getElementById('phone');
     const inputDescription = document.getElementById('description');
     
-    console.log('FormData:', new FormData(document.getElementById('updateForm')));
+    //console.log('FormData:', new FormData(document.getElementById('updateForm')));
 
     const currentCoach = {
         age: '<%= coach.age %>',
@@ -167,15 +167,15 @@
         phone: inputPhone.value || currentCoach.phone|| null,
         description: inputDescription.value || currentCoach.description
         };
-    //console.log(valoresUpdate);
+    ////console.log(valoresUpdate);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     const isAgeValid = valoresUpdate.age >= 1 && valoresUpdate.age <= 99;
     const errorContainer = document.getElementById('errorContainer');
-    //console.log(isAgeValid, isEmailValid)
+    ////console.log(isAgeValid, isEmailValid)
     if ( !isAgeValid) {
-        console.log("error")
+        //console.log("error")
         const errorCard = `
                 <div class="alert alert-danger alert-dismissible fade show fixed-top mx-auto mt-5" role="alert">
                 <strong>Validation Error:</strong> Invalid Input. Please check your input values.
@@ -194,7 +194,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            //console.log(data);
             location.reload()
         })
         .catch(error => {
@@ -239,12 +239,12 @@ function modalFile() {
 
 function uploadImage(event) {
     event.preventDefault();
-    //console.log("estoy en upload");
+    ////console.log("estoy en upload");
     // Obtener el formulario y los datos del archivo
     const form = document.getElementById('uploadform');
     const fileInput = form.querySelector('#imagenCoach');
-    //console.log(fileInput);
-   // console.log(form);
+    ////console.log(fileInput);
+   // //console.log(form);
 
     if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
         console.error('No se ha seleccionado ningún archivo.');
@@ -261,7 +261,7 @@ function uploadImage(event) {
     })
     .then(response => response.json())
     .then(data => {
-       // console.log(data);
+       // //console.log(data);
         location.reload();
     })
     .catch(error => {

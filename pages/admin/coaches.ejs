@@ -209,7 +209,7 @@
                 let inputPhone = document.getElementById(`phoneInput${coachId}`).value;
                 let age = document.getElementById(`ageInput${coachId}`).value;
 
-                //console.log(coachId)
+                ////console.log(coachId)
 
                 let valoresUpdate = {
                     id: coachId,
@@ -219,14 +219,14 @@
                     age: age,
                     description: "update de admin",
                 };
-               // console.log(valoresUpdate);
+               // //console.log(valoresUpdate);
 
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 
                 const errorContainer = document.getElementById('errorContainer');
-                //console.log(isAgeValid, isEmailValid)
+                ////console.log(isAgeValid, isEmailValid)
                 /* if (!isEmailValid ) {
-                    console.log("error aa")
+                    //console.log("error aa")
                     const errorCard = `
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>Validation Error:</strong> Invalid Input. Please check your input values.
@@ -245,7 +245,7 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                       // console.log(data);
+                       // //console.log(data);
                         location.reload()
                     })
                     .catch(error => {
@@ -271,7 +271,7 @@
         })
         .then(response => response.json())
         .then(data => {
-           // console.log(data);
+           // //console.log(data);
             location.reload();
         })
         .catch(error => {
@@ -279,7 +279,7 @@
         });
     } else {
        
-      //  console.log('Delete canceled');
+      //  //console.log('Delete canceled');
     }
 }
     </script>

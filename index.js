@@ -24,9 +24,9 @@ import studentsRoutes from './src/routes/students.routes.js'
 
 //Server
 const app = express();
-app.set("port",30102);
+app.set("port",4000);
 app.listen(app.get("port"));
-console.log("Servidor corriendo en puerto",app.get("port"));
+//console.log("Servidor corriendo en puerto",app.get("port"));
 
 //Configuración
 app.use(express.static(__dirname + "/public"));
@@ -74,7 +74,7 @@ app.get("/admin",authorization.soloAdmin,(req,res)=> res.sendFile(__dirname + "/
 
 app.get("/bills",authorization.soloAdmin, async function (req,res) {
   const bills = await getAllbills();
-  console.log("las bills", bills)
+  //console.log("las bills", bills)
   res.render(__dirname + "/pages/admin/bills.ejs", {bills});
 });
 app.get("/unpaidbills",authorization.soloAdmin, async function (req,res) {
@@ -125,7 +125,7 @@ app.get("/mybills",authorization.soloCoaches, async function(req,res) {
   const coachId = revisarCookie(req, coaches, "id");
   const coachBills = await getBillsbyId(coachId);
   const coachStudents = await getCoachStudents(coachId);
-  console.log(coachBills)
+  //console.log(coachBills)
   res.render(__dirname + "/pages/coaches/index.ejs", { coachBills, coachStudents });
 });
 
@@ -133,7 +133,7 @@ app.get("/group-classes",authorization.soloCoaches, async function(req,res) {
   const coaches = await getCoaches();
   const coachId = revisarCookie(req, coaches, "id");
   const coachClasses = await getCoachClasses(coachId);
-  console.log(coachClasses);
+  //console.log(coachClasses);
   res.render(__dirname + "/pages/coaches/groupclasses.ejs", { coachClasses });
 });
 
@@ -143,7 +143,7 @@ app.post("/api/newbill",authorization.soloCoaches, (req, res) => CreateBilll(req
 app.get("/Account", authorization.soloCoaches, async function (req, res) {
   const coaches = await getCoaches();
   const coachId = revisarCookie(req, coaches, "id");
-  console.log("id del coach", coachId);
+  //console.log("id del coach", coachId);
   try {
     const coach = await getCoachbyId(coachId);
     res.render(__dirname + "/pages/coaches/account.ejs", { coach });

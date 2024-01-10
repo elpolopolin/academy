@@ -187,7 +187,7 @@ function updateData() {
 
     const birthdateNorm = '<%= student.birthdate %>';
     const birthdateFormat = formatarFecha(birthdateNorm);
-   // console.log(birthdateFormat);
+   // //console.log(birthdateFormat);
 
     const currentStudent = {
         guardiansname: '<%= student.guardiansname %>',
@@ -197,8 +197,8 @@ function updateData() {
         birthdate: '<%= student.birthdate %>',
         club: '<%= student.club %>',
     };
-    console.log("current student adress", currentStudent.birthdate)
-    console.log("input brithdat", inputBirthdate.value)
+    //console.log("current student adress", currentStudent.birthdate)
+    //console.log("input brithdat", inputBirthdate.value)
     const birth = inputBirthdate.value.trim() === '0000-00-00' ? currentStudent.birthdate : inputBirthdate.value;
     const valoresUpdate = {
         guardiansname: inputGuardiansName.value || currentStudent.guardiansname || null,
@@ -218,7 +218,7 @@ function updateData() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);
+        //console.log(data);
         location.reload();
     })
     .catch(error => {
@@ -268,12 +268,12 @@ editModal.show();
 
 function uploadImage(event) {
 event.preventDefault();
-//console.log("estoy en upload");
+////console.log("estoy en upload");
 // Obtener el formulario y los datos del archivo
 const form = document.getElementById('uploadform');
 const fileInput = form.querySelector('#imagenstudent');
-//console.log(fileInput);
-// console.log(form);
+////console.log(fileInput);
+// //console.log(form);
 
 if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
 console.error('No se ha seleccionado ningún archivo.');
@@ -290,7 +290,7 @@ body: formData,
 })
 .then(response => response.json())
 .then(data => {
-// console.log(data);
+// //console.log(data);
 location.reload();
 })
 .catch(error => {

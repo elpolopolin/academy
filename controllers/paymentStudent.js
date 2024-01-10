@@ -10,9 +10,9 @@ dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export const createSession = async (req, res) => {
-    console.log("esta es la sesion");
+    //console.log("esta es la sesion");
     const idUser = await getIdbyUsername(req.body.email)
-    console.log("id del user para stripe", idUser);
+    //console.log("id del user para stripe", idUser);
     try {
         // Create the session
         const session = await stripe.checkout.sessions.create({
@@ -30,14 +30,14 @@ export const createSession = async (req, res) => {
                 },
             ],
             mode: "payment",
-            success_url: `https://polonsky.relied.cloud//create-student/success/` + idUser,
-            cancel_url: "https://polonsky.relied.cloud//create-student/cancel" + idUser,
+            success_url: `http://localhost:4000/create-student/success/` + idUser,
+            cancel_url: "http://localhost:4000/create-student/cancel" + idUser,
             metadata: {
                 idUser: idUser,
               },
         });
 
-        console.log(session)
+        //console.log(session)
         await updateStudentSession(idUser, session.id)
         res.json(session);
     } catch (error) {

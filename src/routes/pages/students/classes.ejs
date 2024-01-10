@@ -5,63 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Students</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  </head>
+  </head> 
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      font-size: larger;
-      background-color: #6495ed;
-    }
-  
-    .container {
-
-      padding: 20px; /* Añadir espacio alrededor del contenido */
-      border-radius: 10px; /* Bordes redondeados */
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-        
-    }
-  
-    .search-input {
-      margin-bottom: 20px; /* Espacio inferior para separar la barra de búsqueda */
-    }
-  
-    .card {
-      border: 1px solid #dee2e6; /* Borde delgado alrededor de la tarjeta */
-      border-radius: 10px; /* Bordes redondeados */
-      margin-bottom: 20px; /* Espacio inferior entre las tarjetas */
-    }
-    #card:hover {
-    cursor: pointer;
-    border: 1px solid #007bff; /* Cambia el borde al color que desees */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade una sombra sutile */
-} 
-  
-    .card-body {
-      padding: 20px; /* Añadir espacio alrededor del contenido dentro de la tarjeta */
-    }
-  
-    .card-title {
-      font-size: 1.5em; /* Tamaño del título */
-      margin-bottom: 10px; /* Espacio inferior para separar el título del resto del contenido */
-    }
-  
-    .card-text {
-      color: #6c757d; /* Color de texto más oscuro para la descripción y otros textos */
-    }
-    .custom-link {
-    text-decoration: none; /* Quita el subrayado predeterminado del enlace */
-    color: inherit; /* Hereda el color del texto del enlace */
-    cursor: pointer; /* Cambia el cursor al pasar por encima del enlace */
+     body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    font-size: larger;
+    background-color: #6495ed;
   }
 
-  .custom-link:hover {
-    text-decoration: underline; /* Agrega subrayado al pasar el ratón sobre el enlace */
+  .container {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-input {
+    margin-bottom: 20px;
+  }
+
+  .card {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .card:hover {
+    cursor: pointer;
+    border: 1px solid #230fd3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 20px;
   }
 
   .card-title {
-    text-decoration: underline; /* Agrega subrayado al nombre de la clase */
+    font-size: 1.5em;
+    margin-bottom: 10px;
+   
+  }
+
+  .card-text {
+    color: #6c757d;
+  }
+
+  .custom-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .custom-link:hover {
+    text-decoration: underline;
+  }
+
+  .rounded-profile {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
   }
   </style>
 </head>
@@ -110,21 +114,35 @@
     <div class="container mt-4">
       <input type="text" id="searchInput" class="form-control search-input" placeholder="Search classes...">
       <div class="row">
-          <% for (let i = 0; i < coachClasses.length; i++) { %>
-              <div class="col-md-4 mb-4">
-                  <a href="/students/classes/view/<%= coachClasses[i].id %>" class="custom-link text-decoration-none">
-                      <div class="card h-100">
-                          <div class="card-body d-flex flex-column">
-                              <h5 class="card-title"><%= coachClasses[i].className %></h5>
-                              <p class="card-text">Description: <%= coachClasses[i].description %></p>
-                              <p class="card-text">Level: <%= coachClasses[i].level %></p>
-                              <p class="card-text">Capacity: <%= coachClasses[i].capacity %></p>
-                              <p class="card-text">Coach: <%= coachClasses[i].coachName %> </p>
+        <% for (let i = 0; i < coachClasses.length; i++) { %>
+          <div class="col-md-4 mb-4">
+              <a href="/students/classes/view/<%= coachClasses[i].id %>" class="custom-link text-decoration-none">
+                  <div class="card h-100">
+                      <div class="card-header d-flex gap-2">
+                          <img src="<%= coachClasses[i].coachProfilePicture %>" class="rounded-profile"  alt="Coach Image">
+                          <div class="d-flex align-items-center justify-content-center ">
+                              <h5 class="card-title text-center"><%= coachClasses[i].className %></h5>
                           </div>
                       </div>
-                  </a>
-              </div>
-          <% } %>
+                      <div class="card-body d-flex flex-column">
+                          <b class="text-decoration-underline"><%= coachClasses[i].coachUsername %></b>
+                          <p class="card-text">Description: <%= coachClasses[i].description %></p>
+                          <p class="card-text">Level: <%= coachClasses[i].level %></p>
+                          <p class="card-text">Capacity: <%= coachClasses[i].attending %> / <%= coachClasses[i].capacity %></p>
+                          <div class="class-days d-flex flex-wrap gap-2">
+                              <% const classDays = coachClasses[i].classDays ? coachClasses[i].classDays.split(',') : [] %>
+                              <% for (let j = 0; j < classDays.length; j++) { %>
+                                  <div class="day-badge bg-primary p-1 text-white">
+                                      <%= classDays[j] %>
+                                  </div>
+                              <% } %>
+                          </div>
+                      </div>
+                  </div>
+              </a>
+          </div>
+      <% } %>
+       
       </div>
   </div>
   </main>

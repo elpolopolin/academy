@@ -302,7 +302,7 @@ async function UpdateCoach(req, res) {
 
   // Sacar id del coachlogged
   const coachId = revisarCookie(req, coaches, "id");
-  console.log("este es el coach id update coach: ", coachId)
+  //console.log("este es el coach id update coach: ", coachId)
   const data = req;
 
   try {
@@ -336,17 +336,17 @@ function updateCoachInDatabase(coachId, data) {
 async function updateCoachImage(req, res) {
   try {
 
-    console.log('Req.File:', req.file);
+    //console.log('Req.File:', req.file);
     const extname = req.file ? path.extname(req.file.filename) : '';
     const imagenRuta = req.file ? `${host}/imagenesCoaches/${req.file.filename}` : '';
-    console.log('Imagen Ruta:', imagenRuta);
+    //console.log('Imagen Ruta:', imagenRuta);
     const coaches = await getCoaches();
     const coachId = revisarCookie(req, coaches, "id");
     const result = await pool.query(
       'UPDATE coaches SET profilepicture = ? WHERE id = ?',
       [imagenRuta ,coachId]
     );
-    console.log('Update Result:', result);
+    //console.log('Update Result:', result);
     res.json({ success: true, message: 'Image updated successfully' });
   } catch (error) {
     console.error('Error updating image:', error);
@@ -388,11 +388,11 @@ function updateStudentInDatabaseAdmin(studentId, valoresUpdate) {
 }
 
 async function UpdateCoachAdmin(req, res) {
-  // console.log("update coaches desde admin")
+  // //console.log("update coaches desde admin")
   const coaches = await getCoaches();
   // Sacar id del coachlogged a ver si es admin
   const admin = revisarCookie(req, coaches, "admin");
-  //console.log("es admin ",admin)
+  ////console.log("es admin ",admin)
   const valoresUpdate = req.body;
   const coachId = req.body.id;
   if (admin == 1) {
@@ -404,7 +404,7 @@ async function UpdateCoachAdmin(req, res) {
       res.status(500).json({ success: false, message: 'Error updating coach' });
     }
   } else {
-    console.log("intenta updatear coaches pero no es admin")
+    //console.log("intenta updatear coaches pero no es admin")
   }
 
 }
@@ -422,7 +422,7 @@ async function UpdateStudentAdmin(req, res) {
       res.status(500).json({ success: false, message: 'Error updating coach' });
     }
   } else {
-    console.log("intenta updatear coaches pero no es admin")
+    //console.log("intenta updatear coaches pero no es admin")
   }
 }
 async function becarstudent(req, res) {
@@ -438,7 +438,7 @@ async function becarstudent(req, res) {
       res.status(500).json({ success: false, message: 'Error updating coach' });
     }
   } else {
-    console.log("intenta updatear coaches pero no es admin")
+    //console.log("intenta updatear coaches pero no es admin")
   }
 }
 
@@ -471,7 +471,7 @@ async function sacarbeca(req, res) {
       res.status(500).json({ success: false, message: 'Error updating coach' });
     }
   } else {
-    console.log("intenta updatear coaches pero no es admin")
+    //console.log("intenta updatear coaches pero no es admin")
   }
 }
 
@@ -527,11 +527,11 @@ function updateBillSession(billId, sessionId) {
 
 
 async function deleteCoach(req, res) {
-  // console.log("update coaches desde admin")
+  // //console.log("update coaches desde admin")
   const coaches = await getCoaches();
   // Sacar id del coachlogged a ver si es admin
   const admin = revisarCookie(req, coaches, "admin");
-  //console.log("es admin ",admin)
+  ////console.log("es admin ",admin)
   const coachId = req.body.id;
   if (admin == 1) {
     try {
@@ -542,7 +542,7 @@ async function deleteCoach(req, res) {
       res.status(500).json({ success: false, message: 'Error updating coach' });
     }
   } else {
-    console.log("intenta deletear coaches pero no es admin")
+    //console.log("intenta deletear coaches pero no es admin")
   }
 }
 async function deletestudent(req, res) {
@@ -558,7 +558,7 @@ async function deletestudent(req, res) {
       res.status(500).json({ success: false, message: 'Error updating coach' });
     }
   } else {
-    console.log("intenta deletear coaches pero no es admin")
+    //console.log("intenta deletear coaches pero no es admin")
   }
 }
 function deletestudentbd(studentId) {
@@ -600,7 +600,7 @@ async function CreateBilll(req, res) {
 
   // Sacar id del coachlogged
   const coachId = revisarCookie(req, coaches, "id");
-  console.log("este es el coach id: ", coachId)
+  //console.log("este es el coach id: ", coachId)
   const data = req.body;
 
   try {
@@ -655,7 +655,7 @@ async function registerStudent(req, res) {
    const phonenumber = req.body.phone;
    const mail = req.body.email;
    
-   console.log("register student", username)
+   //console.log("register student", username)
    if (!username || !password ) {
      return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
    }
@@ -724,7 +724,7 @@ function getAllClasses() {
         if (err) {
           reject(err);
         } else {
-          //console.log("Coach classes: " + JSON.stringify(result));
+          ////console.log("Coach classes: " + JSON.stringify(result));
           resolve(result);
         }
       }
@@ -737,7 +737,7 @@ async function createNewClass(req, res) {
   const coaches = await getCoaches();
   // Sacar id del coachlogged
   const coachId = revisarCookie(req, coaches, "id");
-  console.log("este es el coach id: ", coachId)
+  //console.log("este es el coach id: ", coachId)
   const data = req.body;
 
   try {

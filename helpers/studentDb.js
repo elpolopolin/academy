@@ -71,7 +71,7 @@ async function deleteUnpaidStudents() {
   try {
     const query = 'DELETE FROM students WHERE paid = 0';
     const result = await pool.query(query);
-    console.log(`${result.affectedRows} estudiantes no pagados eliminados.`);
+    //console.log(`${result.affectedRows} estudiantes no pagados eliminados.`);
   } catch (error) {
     console.error('Error al eliminar estudiantes no pagados:', error);
   }
@@ -225,17 +225,17 @@ async function deleteUser(idUser) {
   try {
     const student = await getStudentById(idUser);
     if (!student) {
-      console.log("Student not found with ID:", idUser);
+      //console.log("Student not found with ID:", idUser);
       return { success: false, message: 'Student not found' };
     }
-    //console.log(student);
-    //console.log("id que llega", idUser);
+    ////console.log(student);
+    ////console.log("id que llega", idUser);
     if (student.paid != 1) {
       // Delete the student if paid is false
       const result = await deleteUserBd(idUser);
       return { success: true, message: 'Student deleted successfully', result };
     } else {
-      console.log("Trying to delete student but paid = 1");
+      //console.log("Trying to delete student but paid = 1");
       return { success: false, message: 'Cannot delete student with paid = 1' };
     }
   } catch (error) {
@@ -283,13 +283,22 @@ async function getcoachSelected(id) {
 async function getCoachClasses(id) {
   return new Promise((resolve, reject) => {
     pool.query(
-      'SELECT * FROM groupClasses WHERE coachId = ?',
+      `SELECT
+        groupClasses.*,
+        coaches.username AS coachUsername,
+        coaches.profilepicture AS coachProfilePicture,
+        GROUP_CONCAT(class_days.classDay ORDER BY FIELD(class_days.classDay, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')) AS classDays
+      FROM groupClasses
+      LEFT JOIN coaches ON groupClasses.coachId = coaches.id
+      LEFT JOIN class_days ON groupClasses.id = class_days.classId
+      WHERE groupClasses.coachId = ?
+      GROUP BY groupClasses.id;`,
       [id],
       function (err, result) {
         if (err) {
           reject(err);
         } else {
-          console.log("coach classes" + result)
+          //console.log("coach classes" + result)
             resolve(result);
         }
       }
@@ -321,7 +330,7 @@ async function getClassById(id) {
           reject(err);
         } else {
           
-         // console.log("coach classes", result);
+         // //console.log("coach classes", result);
           resolve(result);
         }
       }
@@ -347,7 +356,7 @@ async function logUserAttendance(classId, studentId) {
               attendsClass: true,
               attendanceDays: result.map(entry => entry.day_of_week),
             };
-            //console.log("info de attendance", attendanceInfo)
+            ////console.log("info de attendance", attendanceInfo)
             resolve(attendanceInfo);
           }
         }
@@ -520,7 +529,7 @@ async function updateStudent(req, res) {
 
   // Sacar el id del estudiante logeado
   const studentId = revisarCookie2(req, students, "id");
-  //console.log("Este es el ID del estudiante en la función updateStudent:", studentId);
+  ////console.log("Este es el ID del estudiante en la función updateStudent:", studentId);
   const data = req;
   try {
     const result = await updateStudentInDatabase(studentId, data);
@@ -559,17 +568,17 @@ const host = "https://polonsky.relied.cloud/";
 async function updateStudentImage(req, res) {
   try {
 
-   // console.log('Req.File:', req.file);
+   // //console.log('Req.File:', req.file);
     const extname = req.file ? path.extname(req.file.filename) : '';
     const imagenRuta = req.file ? `${host}/imagenesStudents/${req.file.filename}` : '';
-   // console.log('Imagen Ruta:', imagenRuta);
+   // //console.log('Imagen Ruta:', imagenRuta);
     const students = await getStudents();
     const studentId = revisarCookie2(req, students, "id");
     const result = await pool.query(
       'UPDATE students SET profilepicture = ? WHERE id = ?',
       [imagenRuta ,studentId]
     );
-   // console.log('Update Result:', result);
+   // //console.log('Update Result:', result);
     res.json({ success: true, message: 'Image updated successfully' });
   } catch (error) {
     console.error('Error updating image:', error);

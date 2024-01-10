@@ -6,7 +6,7 @@ document.getElementById("login-form").addEventListener("submit",async (e)=>{
   const password = e.target.children.password.value;
 
 
-  const res = await fetch("https://polonsky.relied.cloud//api/login",{
+  const res = await fetch("http://localhost:4000/api/login",{
     method:"POST",
     headers:{
       "Content-Type":"application/json"

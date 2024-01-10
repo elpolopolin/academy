@@ -5,7 +5,7 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
 
   const formData = new FormData(e.target);
 
-  const res = await fetch("https://polonsky.relied.cloud//api/register", {
+  const res = await fetch("http://localhost:4000/api/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

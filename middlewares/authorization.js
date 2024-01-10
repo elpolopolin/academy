@@ -37,7 +37,7 @@ async function soloCoaches(req, res, next) {
 async function soloStudents(req, res, next) {
   const students = await getStudents();
   const logueado = revisarCookieStudents(req, students);
-  //console.log("auth ",logueado);
+  ////console.log("auth ",logueado);
   if (logueado) return next();
     return res.redirect("/"); 
 }
@@ -68,9 +68,9 @@ async function soloPublico(req, res, next) {
  try{
     const cookieJWT = req.headers.cookie.split("; ").find(cookie => cookie.startsWith("jwt=")).slice(4);
     const decodificada = jsonwebtoken.verify(cookieJWT,process.env.JWT_SECRET);
-    // console.log(decodificada)
+    // //console.log(decodificada)
     const usuarioAResvisar = coaches.find(coach => coach.username === decodificada.username);
-   // console.log("tetos: ", usuarioAResvisar)
+   // //console.log("tetos: ", usuarioAResvisar)
     if(!usuarioAResvisar){
       return false
     }
@@ -86,9 +86,9 @@ async function soloPublico(req, res, next) {
   try{
     const cookieJWT = req.headers.cookie.split("; ").find(cookie => cookie.startsWith("jwt=")).slice(4);
     const decodificada = jsonwebtoken.verify(cookieJWT,process.env.JWT_SECRET);
-    //console.log(decodificada)
+    ////console.log(decodificada)
     const usuarioAResvisar = coaches.find(coach => coach.username === decodificada.username);
-  //  console.log("tetas: ", usuarioAResvisar)
+  //  //console.log("tetas: ", usuarioAResvisar)
     if(usuarioAResvisar.admin === 0){
       return false
     }

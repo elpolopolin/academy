@@ -142,7 +142,7 @@
     isFetching = true;
         document.getElementById('loadingSpinner').classList.remove('d-none');
         document.getElementById('loadingSpinner').classList.remove('d-none');
-        console.log('Coach ID:', coachId);
+        //console.log('Coach ID:', coachId);
         fetch('/api/updateUserCoach', {
                         method: 'POST',
                         headers: {
@@ -152,7 +152,7 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                       // console.log(data);
+                       // //console.log(data);
                        location.reload();
                     })
                     .catch(error => {

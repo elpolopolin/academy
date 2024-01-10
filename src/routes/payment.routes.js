@@ -27,7 +27,7 @@ router.get('/success/:id', async (req, res) => {
             }
         }*/
         const session = await stripe.checkout.sessions.retrieve(bill.sessionId);
-        console.log("ESTA ES LA SESION", session)
+        //console.log("ESTA ES LA SESION", session)
         if(session.payment_status === 'paid'){ await updateBillState(bill.id) }
     }
 

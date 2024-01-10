@@ -25,8 +25,8 @@ export const createSession = async (req, res) => {
                 },
             ],
             mode: "payment",
-            success_url: `https://polonsky.relied.cloud//success/` + req.body.billId,
-            cancel_url: "https://polonsky.relied.cloud//cancel",
+            success_url: `http://localhost:4000/success/` + req.body.billId,
+            cancel_url: "http://localhost:4000/cancel",
             metadata: {
                 billId: req.body.billId,
               },
