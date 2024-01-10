@@ -13,7 +13,7 @@ async function soloAdmin(req, res, next) {
 
   if (logueado && admin) return next();
   if (logueado){
-    return res.redirect("/Account");
+    return res.redirect("/mybills");
   } else{
     return res.redirect("/students");
   }

@@ -20,6 +20,8 @@ import paymentRoutes from './src/routes/payment.routes.js'
 import studentsRoutes from './src/routes/students.routes.js'
 
 
+
+
 //Server
 const app = express();
 app.set("port",4000);
@@ -114,7 +116,8 @@ app.post('/api/sacarbeca',authorization.soloAdmin, (req, res) => sacarbeca(req, 
 app.post('/api/deletestudent',authorization.soloAdmin, (req, res) => deletestudent(req, res));
 app.post('/api/register-student',authorization.soloPublico, (req, res) => registerStudent(req, res));
 //
-///api/
+
+
 
 //coaches
 app.get("/mybills",authorization.soloCoaches, async function(req,res) {
