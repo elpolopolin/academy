@@ -555,7 +555,7 @@ function updateStudentInDatabase(studentId, data) {
     );
   });
 }
-const host = "http://localhost:4000";
+const host = "https://polonsky.relied.cloud/";
 async function updateStudentImage(req, res) {
   try {
 

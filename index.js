@@ -24,7 +24,7 @@ import studentsRoutes from './src/routes/students.routes.js'
 
 //Server
 const app = express();
-app.set("port",4000);
+app.set("port",30102);
 app.listen(app.get("port"));
 console.log("Servidor corriendo en puerto",app.get("port"));
 

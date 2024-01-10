@@ -30,8 +30,8 @@ export const createSession = async (req, res) => {
                 },
             ],
             mode: "payment",
-            success_url: `http://localhost:4000/create-student/success/` + idUser,
-            cancel_url: "http://localhost:4000/create-student/cancel" + idUser,
+            success_url: `https://polonsky.relied.cloud//create-student/success/` + idUser,
+            cancel_url: "https://polonsky.relied.cloud//create-student/cancel" + idUser,
             metadata: {
                 idUser: idUser,
               },

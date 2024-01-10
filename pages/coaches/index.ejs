@@ -388,7 +388,7 @@
                         <input
                           type="text"
                           value="some.com/share"
-                          href="http://localhost:4000/viewbill/"
+                          href="https://polonsky.relied.cloud//viewbill/"
                           id="modal-link"
                           style="flex: 0.9; font-size: 90%"
                         />
@@ -467,7 +467,7 @@
       function showModal(id) {
         document.getElementById("modal-billid").textContent = "Bill Id: " + id;
         document.getElementById("modal-link").href =
-          "http://localhost:4000/viewbill/";
+          "https://polonsky.relied.cloud//viewbill/";
         document.getElementById("modal-link").href += id;
         document.getElementById("copyLink").onclick = () =>
           copyToClipboard(document.getElementById("modal-link").href);
@@ -600,7 +600,7 @@
         const classDate = document.getElementById("classDate").value;
         const amount = document.getElementById("c2").value;
 
-        fetch("http://localhost:4000/api/newbill", {
+        fetch("https://polonsky.relied.cloud//api/newbill", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

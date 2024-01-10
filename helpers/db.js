@@ -28,7 +28,7 @@ async function getCoachbyId(id) {
   });
 }
 
-const host = "http://localhost:4000";
+const host = "https://polonsky.relied.cloud/";
 
 async function getCoachesElement(element) {
   return new Promise((resolve, reject) => {
