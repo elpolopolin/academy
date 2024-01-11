@@ -75,10 +75,18 @@
                 <ul class="list-unstyled">
                   <li class="text-black">Client Name: <%= bill.studentName %></li>
                   <li class="text-black mt-1">
-                    Bill Date: <%= bill.billDate %>
-                  </li>
-                  <li class="text-black mt-1">
-                    Class Date: <%= bill.classDate %>
+                    <% 
+                    // Convertir las fechas a objetos Date
+                    const billDate = new Date(bill.billDate);
+                    const classDate = new Date(bill.classDate);
+                    %>
+                    
+                    <li class="text-black mt-1">
+                      Bill Date: <%= billDate.toLocaleDateString('en-US') %>
+                    </li>
+                    <li class="text-black mt-1">
+                      Class Date: <%= classDate.toLocaleDateString('en-US') %>
+                    </li>
                   </li>
                   
                 </ul>

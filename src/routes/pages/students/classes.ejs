@@ -88,14 +88,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/students/mybills">Bills</a>
+                </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/students/account">Account</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/students/coaches">Coaches</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/students/mybills">My Bills</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/students/classes">Classes</a>
@@ -115,11 +115,10 @@
       <input type="text" id="searchInput" class="form-control search-input" placeholder="Search classes...">
       <div class="row">
         <% for (let i = 0; i < coachClasses.length; i++) { %>
-          <div class="col-md-4 mb-4">
+          <div class="col-md-4   mb-4">
               <a href="/students/classes/view/<%= coachClasses[i].id %>" class="custom-link text-decoration-none">
                   <div class="card h-100">
                       <div class="card-header d-flex gap-2">
-                          <img src="<%= coachClasses[i].coachProfilePicture %>" class="rounded-profile"  alt="Coach Image">
                           <div class="d-flex align-items-center justify-content-center ">
                               <h5 class="card-title text-center"><%= coachClasses[i].className %></h5>
                           </div>
@@ -130,12 +129,24 @@
                           <p class="card-text">Level: <%= coachClasses[i].level %></p>
                           <p class="card-text">Capacity: <%= coachClasses[i].attending %> / <%= coachClasses[i].capacity %></p>
                           <div class="class-days d-flex flex-wrap gap-2">
-                              <% const classDays = coachClasses[i].classDays ? coachClasses[i].classDays.split(',') : [] %>
-                              <% for (let j = 0; j < classDays.length; j++) { %>
-                                  <div class="day-badge bg-primary p-1 text-white">
-                                      <%= classDays[j] %>
-                                  </div>
-                              <% } %>
+                            <%
+                            const classDays = coachClasses[i].classDays ? coachClasses[i].classDays.split(',') : [];
+                            const dayAbbreviations = {
+                              'Monday': 'Mon',
+                              'Tuesday': 'Tue',
+                              'Wednesday': 'Wed',
+                              'Thursday': 'Thur',
+                              'Friday': 'Fri',
+                              'Saturday': 'Sat',
+                              'Sunday': 'Sun'
+                            };
+                            %>
+                            
+                            <% for (let j = 0; j < classDays.length; j++) { %>
+                              <div class="day-badge bg-primary p-1 text-white">
+                                <%= dayAbbreviations[classDays[j]] %>
+                              </div>
+                            <% } %>
                           </div>
                       </div>
                   </div>
