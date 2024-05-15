@@ -1,4 +1,4 @@
-# Polonsky
+#
 
 La academia desea desarrollar una aplicación en la cual los entrenadores puedan facturar directamente a sus clientes y los clientes puedan pagar la factura a través de la aplicación. Actualmente, tenemos y utilizamos Quickbooks Online, pero tenemos dificultades para facturar a los clientes debido a su gran cantidad. Debería haber una forma de que esta nueva aplicación esté vinculada a Quickbooks para que los pagos se procesen automáticamente. Si no es posible con Quickbooks, entonces debería estar vinculada al banco/Zelle de la academia. No estoy seguro de qué necesita estar conectado/establecido para que la aplicación acepte pagos o si eso es siquiera posible. Sería ideal que la factura creara un enlace que los clientes pudieran hacer clic, enviándolos a Stripe u otro procesador de pagos, donde pudieran ingresar su información de tarjeta de crédito o cuenta bancaria. ¡Sería genial si todo se pudiera hacer dentro de la aplicación!
 
